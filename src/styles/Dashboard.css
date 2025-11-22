@@ -1,0 +1,141 @@
+/* Dashboard.css */
+
+/* General Layout */
+.admin-dashboard {
+  display: flex;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 250px;
+  background-color: #198754;
+  color: white;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease;
+  z-index: 999;
+}
+
+.sidebar h2 {
+  margin-bottom: 40px;
+  font-size: 1.8rem;
+}
+
+.sidebar nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar nav ul li {
+  padding: 12px 10px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: 0.3s;
+}
+
+.sidebar nav ul li:hover,
+.sidebar nav ul li.active {
+  background-color: #146c43;
+}
+
+.sidebar nav ul li.logout {
+  margin-top: auto;
+  background-color: #dc3545;
+}
+
+.sidebar nav ul li.logout:hover {
+  background-color: #a71d2a;
+}
+
+/* Hamburger button */
+.hamburger {
+  display: none; /* hide on desktop */
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  font-size: 2rem;
+  background: none;
+  border: none;
+  color: #198754;
+  cursor: pointer;
+  z-index: 1000;
+}
+
+/* Main Content */
+.dashboard-content {
+  flex: 1;
+  padding: 40px;
+  background-color: #f8f9fa;
+}
+
+.dashboard-content h1 {
+  font-size: 2rem;
+  color: #333;
+}
+
+/* Responsive for Mobile */
+@media (max-width: 768px) {
+  .admin-dashboard {
+    flex-direction: column;
+  }
+
+  /* Sidebar becomes hidden initially */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    transform: translateX(-100%); /* hide */
+  }
+
+  /* Show sidebar when menuOpen */
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  /* Hide title on mobile */
+  .sidebar h2 {
+    display: none;
+  }
+
+  /* Sidebar list */
+  .sidebar nav ul {
+    display: flex;
+    flex-direction: column;
+    padding-top: 60px; /* give space for hamburger */
+  }
+
+  .sidebar nav ul li {
+    margin-bottom: 10px;
+    padding: 15px 20px;
+    border-radius: 0;
+    text-align: left;
+  }
+
+  /* Hamburger button visible */
+  .hamburger {
+    display: block;
+  }
+
+  /* Adjust main content padding */
+  .dashboard-content {
+    padding: 20px;
+  }
+
+  /* Optional: add semi-transparent background when menu open */
+  .sidebar.open::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: -1;
+  }
+}

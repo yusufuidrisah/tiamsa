@@ -1,0 +1,73 @@
+/* Navbar container */
+.nav {
+  background-color: #146c43;
+  padding: 1rem;
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+/* Flex container */
+.nav-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Logo */
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+/* Desktop links */
+.links {
+  display: flex;
+  gap: 15px;
+}
+
+/* Link styles */
+.link {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+/* Link hover */
+.link:hover {
+  opacity: 0.7;
+}
+
+/* Hamburger is hidden on desktop */
+.menu-icon {
+  display: none;
+  font-size: 1.8rem;
+  cursor: pointer;
+}
+
+/* ----------- RESPONSIVE ----------- */
+@media (max-width: 768px) {
+  .links {
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+    background-color: #146c43;
+    padding: 1rem;
+    margin-top: 1rem;
+    border-radius: 5px;
+  }
+
+  /* Show dropdown when active */
+  .links.active {
+    display: flex;
+  }
+
+  /* Show hamburger on mobile */
+  .menu-icon {
+    display: block;
+  }
+}

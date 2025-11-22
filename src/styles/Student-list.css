@@ -1,0 +1,121 @@
+/* ------------------------------
+   MAIN CONTAINER
+------------------------------ */
+.students-container {
+  padding: 20px;
+  background-color: #f8f9fa;
+}
+
+.students-container h2 {
+  color: #198754;
+  margin-bottom: 20px;
+}
+
+/* ------------------------------
+   FORM STYLES
+------------------------------ */
+.students-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.students-form input,
+.students-form select {
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  flex: 1 1 250px;
+}
+
+.students-form button {
+  padding: 10px 15px;
+  background-color: #198754;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.students-form button:hover {
+  background-color: #146c43;
+}
+
+/* ------------------------------
+   TABLE DESKTOP VERSION
+------------------------------ */
+.table-responsive-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.students-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.students-table th,
+.students-table td {
+  padding: 12px;
+  border: 1px solid #ccc;
+  text-align: left;
+}
+
+.students-table th {
+  background-color: #198754;
+  color: white;
+}
+
+.students-table button {
+  padding: 5px 10px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.students-table button:hover {
+  background-color: #a71d2a;
+}
+
+/* ------------------------------
+   MOBILE RESPONSIVE
+------------------------------ */
+@media (max-width: 768px) {
+  /* ... TABLE STYLES REMAINS THE SAME ... */
+  .students-table thead {
+    display: none;
+  }
+
+  .students-table,
+  .students-table tbody,
+  .students-table tr,
+  .students-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .students-table tr {
+    margin-bottom: 15px;
+    background: white;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    padding: 8px 10px;
+  }
+
+  .students-table td {
+    text-align: left;
+    padding: 6px 0;
+    position: relative;
+  }
+
+  .students-table td::before {
+    content: attr(data-label) ": ";
+    font-weight: bold;
+    color: #198754;
+    display: block;
+    margin-bottom: 2px;
+  }
+}

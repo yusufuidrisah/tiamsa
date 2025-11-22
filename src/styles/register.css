@@ -1,0 +1,49 @@
+.register-hero {
+  background-color: #f8f9fa;
+  padding: 50px 20px;
+  text-align: center;
+}
+
+.register-hero h1 {
+  font-size: 2.5rem;
+  margin-bottom: 30px;
+  color: #198754;
+}
+
+.register-form {
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.register-form input,
+.register-form select {
+  padding: 12px 15px;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.register-form button {
+  padding: 12px 15px;
+  font-size: 1.1rem;
+  background-color: #198754;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.register-form button:hover {
+  background-color: #146c43;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .register-hero h1 {
+    font-size: 2rem;
+  }
+}
