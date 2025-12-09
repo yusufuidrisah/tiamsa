@@ -63,7 +63,6 @@ export default function StudentsList() {
   return (
     <div className="students-container">
       <h2>Students List</h2>
-
       <form className="students-form" onSubmit={handleAdd}>
         <input
           type="text"
@@ -115,6 +114,7 @@ export default function StudentsList() {
 
         <button type="submit">Add Student</button>
       </form>
+
       <div className="table-responsive-wrapper">
         <table className="students-table">
           <thead>

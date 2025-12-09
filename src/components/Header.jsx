@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "./Header.css";
+import logoimage from "../assets/logo.png";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
@@ -8,6 +9,7 @@ export default function Header() {
   return (
     <nav className="nav">
       <div className="nav-container">
+        <img src={logoimage} alt="Logo" className="logo-png"></img>
         <h1 className="logo">TIAMSA</h1>
 
         {/* Desktop Links */}

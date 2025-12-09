@@ -1,3 +1,4 @@
+/* === HERO SECTION === */
 .register-hero {
   background-color: #f8f9fa;
   padding: 50px 20px;
@@ -10,6 +11,7 @@
   color: #198754;
 }
 
+/* === FORM MAIN === */
 .register-form {
   max-width: 600px;
   margin: 0 auto;
@@ -18,14 +20,93 @@
   gap: 15px;
 }
 
-.register-form input,
-.register-form select {
-  padding: 12px 15px;
-  font-size: 1rem;
-  border-radius: 6px;
-  border: 1px solid #ccc;
+/* === FORM GROUP === */
+.form-group {
+  position: relative;
+  width: 100%;
+  margin-bottom: 20px;
 }
 
+/* === INPUT + SELECT SAME STYLE === */
+/* === INPUT === */
+.form-group input {
+  width: 100%;
+  padding: 14px 15px;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 2px solid #cde3d6;
+  background: transparent;
+  outline: none;
+  transition: 0.3s ease;
+  box-sizing: border-box;
+}
+
+/* === SELECT === */
+.form-group select {
+  width: 100%;
+  padding: 14px 15px;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 2px solid #cde3d6;
+  background-color: transparent;
+  outline: none;
+  transition: 0.3s ease;
+  box-sizing: border-box;
+
+  /* remove default arrow */
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  /* add custom arrow */
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%23777' height='16' viewBox='0 0 24 24' width='16' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+}
+
+/* FOCUS BORDER */
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #198754;
+}
+
+/* === FLOATING LABEL === */
+.form-group label {
+  position: absolute;
+  top: 50%;
+  left: 15px;
+  transform: translateY(-50%);
+  color: #777;
+  font-size: 1rem;
+  pointer-events: none;
+  transition: 0.3s ease;
+  background: #f8f9fa;
+  padding: 0 5px;
+}
+
+/* INPUT FLOAT */
+.form-group input:focus + label,
+.form-group input:not(:placeholder-shown) + label {
+  top: -8px;
+  font-size: 0.78rem;
+  color: #198754;
+}
+
+/* SELECT FLOAT */
+.form-group select:focus + label,
+.form-group select:not([value=""]) + label {
+  top: -8px;
+  font-size: 0.78rem;
+  color: #198754;
+}
+
+/* SELECT placeholder color */
+.form-group select option[disabled] {
+  color: #aaa;
+}
+
+/* SUBMIT BUTTON */
 .register-form button {
   padding: 12px 15px;
   font-size: 1.1rem;
@@ -34,14 +115,18 @@
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  transition: 0.3s;
+  transition: 0.3s ease;
+}
+
+.form-group select {
+  background-color: transparent;
 }
 
 .register-form button:hover {
   background-color: #146c43;
 }
 
-/* Responsive */
+/* === RESPONSIVE === */
 @media (max-width: 768px) {
   .register-hero h1 {
     font-size: 2rem;
