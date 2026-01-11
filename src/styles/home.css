@@ -63,7 +63,7 @@
 .hero-title span {
   color: #198754; /* Rangi ya TIAMSA */
   background: -webkit-linear-gradient(#2ecc71, #198754);
-  -webkit-background-clip: text;
+  /* -webkit-background-clip: text; */
   -webkit-text-fill-color: transparent;
 }
 

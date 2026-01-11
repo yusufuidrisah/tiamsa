@@ -18,9 +18,49 @@ export default function Register() {
     setFormData,
     handleChange,
     handleFile,
-    handleSubmit,
+
     filteredCourses,
   } = useContext(CourseContext);
+
+  // SAVE TO SQL
+  const handleSqlSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch("http://localhost:5000/api/students", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("Safi! " + data.message);
+
+        setFormData({
+          f_name: "",
+          m_name: "",
+          l_name: "",
+          regNo: "",
+          level: "",
+          course: "",
+          email: "",
+          phone: "",
+          campus: "",
+          gender: "",
+          studentID: null,
+        });
+      } else {
+        //  RegNo tayari ipo
+        alert("Jaribu tena: " + data.message);
+      }
+    } catch (error) {
+      alert("Hitilafu: Hakikisha umewasha SERVER");
+    }
+  };
 
   return (
     <div className="register-page">
@@ -33,7 +73,7 @@ export default function Register() {
             <p>Jaza fomu hii kwa usahihi ili kujiunga na TIAMSA</p>
           </div>
 
-          <form className="register-form" onSubmit={handleSubmit}>
+          <form className="register-form" onSubmit={handleSqlSubmit}>
             <h3 className="form-section-title">
               <FiUser /> Personal Information
             </h3>
