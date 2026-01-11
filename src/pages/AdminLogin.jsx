@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { FiMail, FiLock, FiLogIn, FiArrowLeft } from "react-icons/fi";
 import Header from "../components/Header";
 import "../styles/admin.css";
 
 export default function AdminLogin() {
   const navigate = useNavigate();
-
   const [credentials, setCredentials] = useState({ email: "", password: "" });
 
   const handleChange = (e) => {
@@ -14,41 +14,64 @@ export default function AdminLogin() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Temporary alert; baadaye tutafanya authentication
+    // Temporary logic
     if (credentials.email && credentials.password) {
-      alert(`Logging in as ${credentials.email}`);
       setCredentials({ email: "", password: "" });
-      navigate("/admin/dashboard"); // Redirect to dashboard
+      navigate("/admin/dashboard");
     } else {
-      alert("Please fill in all fields");
+      alert("Tafadhali jaza email na password.");
     }
   };
 
   return (
-    <>
+    <div className="login-page-wrapper">
       <Header />
-      <div className="admin-login-hero">
-        <h1>Admin Login</h1>
-        <form className="admin-login-form" onSubmit={handleSubmit}>
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={credentials.email}
-            onChange={handleChange}
-            required
-          />
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={credentials.password}
-            onChange={handleChange}
-            required
-          />
-          <button type="submit">Login</button>
-        </form>
+      <div className="login-container">
+        <div className="login-card">
+          <div className="login-header">
+            <div className="icon-circle">
+              <FiLock />
+            </div>
+            <h1>Admin Portal</h1>
+          </div>
+
+          <form className="admin-login-form" onSubmit={handleSubmit}>
+            <div className="input-with-icon">
+              <FiMail className="input-icon" />
+              <input
+                type="email"
+                name="email"
+                placeholder="Admin Email"
+                value={credentials.email}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div className="input-with-icon">
+              <FiLock className="input-icon" />
+              <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                value={credentials.password}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <button type="submit" className="login-submit-btn">
+              Login Now <FiLogIn />
+            </button>
+          </form>
+
+          <div className="login-footer">
+            <button onClick={() => navigate("/")} className="back-home">
+              <FiArrowLeft /> Back to Website
+            </button>
+          </div>
+        </div>
       </div>
-    </>
+    </div>
   );
 }

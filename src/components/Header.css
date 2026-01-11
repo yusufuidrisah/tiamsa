@@ -1,14 +1,15 @@
-/* Navbar container */
+/* Header.css */
+
 .nav {
-  background-color: #146c43;
-  padding: 1rem;
+  background-color: #146c43; /* Rangi kuu ya kijani */
+  padding: 0.8rem 2rem;
   color: white;
   position: sticky;
   top: 0;
   z-index: 1000;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
-/* Flex container */
 .nav-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -17,65 +18,122 @@
   align-items: center;
 }
 
-/* Logo */
-.logo {
-  font-size: 1.5rem;
-  font-weight: bold;
-  position: absolute;
-  left: 90px;
+/* Logo Section */
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: white;
 }
 
 .logo-png {
-  max-width: 50px;
-  max-height: 50px;
-  border-radius: 30px;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  object-fit: cover;
 }
 
-/* Desktop links */
-.links {
+.logo-text {
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+/* Links Wrapper */
+.links-wrapper {
   display: flex;
-  gap: 15px;
+  align-items: center;
+  gap: 8px;
 }
 
-/* Link styles */
 .link {
-  color: white;
+  color: rgba(255, 255, 255, 0.85);
   text-decoration: none;
   font-weight: 500;
-  transition: 0.3s;
+  padding: 8px 15px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
 }
 
-/* Link hover */
 .link:hover {
-  opacity: 0.7;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
 }
 
-/* Hamburger is hidden on desktop */
+.active-link {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  font-weight: 700;
+}
+
+/* Admin Button Specific */
+.admin-btn {
+  background: rgba(0, 0, 0, 0.2);
+  margin-left: 10px;
+}
+
+.admin-btn:hover {
+  background: #198754;
+}
+
+.nav-icon {
+  font-size: 1.1rem;
+}
+
+/* Hamburger Hidden on Desktop */
 .menu-icon {
   display: none;
   font-size: 1.8rem;
   cursor: pointer;
+  transition: 0.3s;
 }
 
-/* ----------- RESPONSIVE ----------- */
-@media (max-width: 768px) {
-  .links {
-    display: none;
-    flex-direction: column;
-    gap: 10px;
-    background-color: #146c43;
-    padding: 1rem;
-    margin-top: 1rem;
-    border-radius: 5px;
+/* ----------- RESPONSIVE (Mobile) ----------- */
+@media (max-width: 900px) {
+  .nav {
+    padding: 0.8rem 1.2rem;
   }
 
-  /* Show dropdown when active */
-  .links.active {
-    display: flex;
-  }
-
-  /* Show hamburger on mobile */
   .menu-icon {
     display: block;
+  }
+
+  .links-wrapper {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: #115c39;
+    flex-direction: column;
+    padding: 20px;
+    gap: 15px;
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    transform: translateY(-110%); /* Menu inajificha juu */
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: -1;
+    opacity: 0;
+  }
+
+  .links-wrapper.active {
+    transform: translateY(0); /* Menu inashuka chini */
+    opacity: 1;
+  }
+
+  .link {
+    width: 100%;
+    padding: 12px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .admin-btn {
+    margin-left: 0;
+    margin-top: 10px;
+    background: #198754;
   }
 }

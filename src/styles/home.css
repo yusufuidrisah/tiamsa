@@ -1,105 +1,165 @@
-/* Hero Section */
-.hero {
+.home-wrapper {
+  overflow-x: hidden;
+}
+
+.hero-section {
+  height: 100vh;
   background-size: cover;
   background-position: center;
-  padding: 80px 20px;
-  height: 75vh;
+  background-attachment: fixed;
   display: flex;
   align-items: center;
-  justify-content: center;
-  text-align: center;
-  color: white;
   position: relative;
 }
 
-/* Dark overlay */
-.hero::before {
-  content: "";
+.hero-overlay {
   position: absolute;
-  top: 0;
-  left: 0;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.8) 30%,
+    rgba(0, 0, 0, 0.3)
+  );
+  z-index: 1;
+}
+
+.hero-container {
   width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.55);
-}
-
-.hero-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 30px;
   position: relative;
-  z-index: 10;
-  max-width: 700px;
+  z-index: 2;
 }
 
-/* Big title */
-.hero-title {
-  font-size: 3rem;
-  font-weight: bold;
+.hero-content-box {
+  max-width: 650px;
+  animation: fadeInUp 1s ease-out;
 }
 
-/* Subtitle */
-.hero-subtitle {
-  margin-top: 15px;
-  font-size: 1.2rem;
-  line-height: 1.6;
-  opacity: 0.9;
-}
-
-/* Buttons */
-.hero-buttons {
-  margin-top: 25px;
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-}
-
-/* Button Style */
-.btn {
-  padding: 12px 25px;
-  font-size: 1rem;
-  border-radius: 5px;
-  text-decoration: none;
+.hero-tagline {
+  display: inline-block;
+  background: rgba(25, 135, 84, 0.2);
+  color: #2ecc71;
+  padding: 8px 16px;
+  border-radius: 50px;
+  font-size: 0.9rem;
   font-weight: 600;
-  transition: 0.3s;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  border: 1px solid rgba(46, 204, 113, 0.3);
+  backdrop-filter: blur(5px);
 }
 
-.register-btn {
-  background-color: #198754;
+.hero-title {
+  font-size: 4rem;
+  line-height: 1.1;
+  color: #fff;
+  font-weight: 800;
+  margin-bottom: 25px;
+}
+
+.hero-title span {
+  color: #198754; /* Rangi ya TIAMSA */
+  background: -webkit-linear-gradient(#2ecc71, #198754);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-subtitle {
+  font-size: 1.25rem;
+  color: #e2e8f0;
+  line-height: 1.8;
+  margin-bottom: 35px;
+  max-width: 550px;
+}
+
+/* Button Group */
+.hero-cta-group {
+  display: flex;
+  gap: 20px;
+}
+
+.btn {
+  padding: 16px 32px;
+  font-size: 1rem;
+  font-weight: 700;
+  border-radius: 12px;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-primary {
+  background: #198754;
   color: white;
+  box-shadow: 0 10px 20px rgba(25, 135, 84, 0.3);
 }
 
-.register-btn:hover {
-  background-color: #146c43;
+.btn-primary:hover {
+  background: #146c43;
+  transform: translateY(-3px);
+  box-shadow: 0 15px 30px rgba(25, 135, 84, 0.4);
 }
 
-.announce-btn {
-  background-color: white;
+.btn-outline {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.btn-outline:hover {
+  background: white;
   color: #198754;
-}
-
-.announce-btn:hover {
-  background-color: #e6e6e6;
+  transform: translateY(-3px);
 }
 
 /* Footer */
-.footer {
+.home-footer {
+  background: #1a1d1b;
+  color: #94a3b8;
+  padding: 30px 20px;
   text-align: center;
-  padding: 20px;
-  margin-top: 5px;
-  color: #555;
-  font-size: 0.9rem;
+  border-top: 1px solid #2d3436;
 }
 
-/* RESPONSIVE */
+/* Animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
 @media (max-width: 768px) {
+  .hero-section {
+    background-attachment: scroll;
+    text-align: center;
+  }
+
+  .hero-content-box {
+    margin: 0 auto;
+  }
+
   .hero-title {
-    font-size: 2.2rem;
+    font-size: 2.5rem;
   }
 
-  .hero-subtitle {
-    font-size: 1rem;
-  }
-
-  .hero-buttons {
+  .hero-cta-group {
     flex-direction: column;
-    gap: 10px;
+    gap: 15px;
+  }
+
+  .btn {
+    justify-content: center;
   }
 }

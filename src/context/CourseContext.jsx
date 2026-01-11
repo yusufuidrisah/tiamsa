@@ -4,7 +4,9 @@ export const CourseContext = createContext();
 
 export function CourseProvider({ children }) {
   const [formData, setFormData] = useState({
-    name: "",
+    f_name: "",
+    m_name: "",
+    l_name: "",
     regNo: "",
     level: "",
     course: "",
@@ -17,7 +19,7 @@ export function CourseProvider({ children }) {
 
   const courseOptions = {
     certificate: [
-      "Basic Technician Certificate in Accountancy (BTCA",
+      "Basic Technician Certificate in Accountancy (BTCA)",
       "Basic Technician Certificate in Procurement and Logistics Management (BTCPLM)",
       "Basic Technician Certificate in Business Administration (BTCBA)",
       "Basic Technician Certificate in Human Resource Management (BTCHRM)",
@@ -35,9 +37,9 @@ export function CourseProvider({ children }) {
     ],
     masters: [
       "Master of Science Degree in Accounting and Finance (MSc. ACC & FIN)",
-      "MMaster of Science in Procurement & Supply Management (MSc. PSM)",
+      "Master of Science in Procurement & Supply Management (MSc. PSM)",
       "Master of Business Administration in Project Management (MBA PM)",
-      "Master in Human Resource Management with Information Technology [MHRM-IT",
+      "Master in Human Resource Management with Information Technology [MHRM-IT]",
       "Master of Science in Marketing and Public Relations [MSC MPR]",
     ],
   };
@@ -63,17 +65,31 @@ export function CourseProvider({ children }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Student Data:", formData);
-    alert("Registration Successful!");
+
+    // Save student to localStorage
+    let all = JSON.parse(localStorage.getItem("students")) || [];
+    all.push({ id: Date.now(), ...formData });
+    localStorage.setItem("students", JSON.stringify(all));
+
+    // Reset form
     setFormData({
-      name: "",
+      f_name: "",
+      m_name: "",
+      l_name: "",
       regNo: "",
+      level: "",
       course: "",
       email: "",
       phone: "",
       campus: "",
       gender: "",
+      studentID: null,
     });
+
+    // Show alert
+    alert("Registration Successful!");
+
+    // Redirect to students list
   };
 
   return (
