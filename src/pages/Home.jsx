@@ -1,9 +1,9 @@
 import React from "react";
-import { FiUserPlus, FiBell, FiArrowRight } from "react-icons/fi";
+import { FiUserPlus, FiArrowRight } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import Header from "../components/Header";
 import heroImage from "../assets/tiamsa-back-ground.jpeg";
-import "../styles/Home.css";
+import "../styles/home.css";
 
 export default function Home() {
   return (

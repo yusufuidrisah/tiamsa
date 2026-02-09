@@ -1,120 +1,52 @@
-/* General Layout */
+:root {
+  --primary-green: #198754;
+  --white: #ffffff;
+  --soft-gray: #f9f9f9;
+  --text-dark: #1a1a1a;
+  --text-muted: #4a4a4a;
+}
+
 .about-page {
   font-family: "Inter", sans-serif;
-  overflow-x: hidden;
+  color: var(--text-dark);
+  background-color: var(--white);
 }
 
-/* Hero Section */
-
+/* Hero - Simple & Bold */
 .about-hero {
-  position: relative;
-  background: linear-gradient(135deg, #198754 0%, #0f5132 100%);
-  color: #ffffff;
-  padding: 80px 20px;
+  padding: 120px 20px 60px;
+  background-color: var(--white);
   text-align: center;
-  overflow: hidden;
+  border-bottom: 1px solid #eee;
 }
 
-/* Dark overlay */
-.hero-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.3);
-  z-index: 1;
-}
-
-/* Pattern */
-.about-hero::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(
-    circle at 1px 1px,
-    rgba(255, 255, 255, 0.05) 1px,
-    transparent 0
-  );
-  background-size: 26px 26px;
-  z-index: 0;
-}
-
-/* Content */
-.about-hero-content {
-  position: relative;
-  z-index: 2;
-  max-width: 760px; /* ⬅️ PUNGUA */
-  margin: 0 auto;
-}
-
-/* Title */
 .about-hero h1 {
-  font-size: 2.4rem; /* ⬅️ PUNGUA */
+  font-size: 3rem;
   font-weight: 800;
-  margin-bottom: 12px;
-  letter-spacing: -0.5px;
-  text-shadow: 0 3px 10px rgba(0, 0, 0, 0.35);
+  color: var(--primary-green);
+  margin-bottom: 20px;
+  letter-spacing: -1px;
 }
 
-/* Underline */
-.underline {
-  width: 60px;
-  height: 3px;
-  background: #ffffff;
-  margin: 0 auto 16px;
-  border-radius: 3px;
-}
-
-/* Text */
 .about-hero p {
-  font-size: 1rem;
-  line-height: 1.7;
-  color: rgba(255, 255, 255, 0.9);
+  max-width: 700px;
+  margin: 0 auto;
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: var(--text-muted);
 }
 
-/* 
-   LARGE SCREENS 
-*/
-@media (min-width: 1400px) {
-  .about-hero {
-    padding: 70px 20px;
-  }
-
-  .about-hero h1 {
-    font-size: 2.2rem;
-  }
-
-  .about-hero-content {
-    max-width: 700px;
-  }
-}
-
-/* 
-   MOBILE
- */
-@media (max-width: 768px) {
-  .about-hero {
-    padding: 70px 16px;
-  }
-
-  .about-hero h1 {
-    font-size: 2rem;
-  }
-
-  .about-hero p {
-    font-size: 0.95rem;
-  }
-}
-
-/* Main Content Grid */
+/* Main Content Area */
 .about-main {
   padding: 80px 20px;
-  background-color: #fdfdfd;
 }
 
 .about-container {
-  max-width: 1100px;
+  max-width: 1000px;
   margin: 0 auto;
 }
 
+/* Grid Layout - No shadows, just clean borders */
 .vision-mission-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -123,83 +55,77 @@
 }
 
 .info-card {
-  background: white;
   padding: 40px;
-  border-radius: 20px;
-  border: 1px solid #f0f0f0;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
-  transition: transform 0.3s ease;
-  text-align: center;
+  border: 2px solid #f0f0f0;
+  border-radius: 4px; /* Sharp corners for professional look */
+  transition: border-color 0.3s ease;
 }
 
 .info-card:hover {
-  transform: translateY(-5px);
-}
-
-.section-icon {
-  font-size: 2.5rem;
-  color: #198754;
-  margin-bottom: 20px;
+  border-color: var(--primary-green);
 }
 
 .info-card h2 {
-  color: #2d3436;
-  font-size: 1.8rem;
+  font-size: 1.5rem;
+  color: var(--primary-green);
   margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-/* Activities Styling */
+.info-card p {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+/* Core Activities - List Style */
 .section-title {
-  text-align: center;
-  font-size: 2.2rem;
+  text-align: left;
+  font-size: 1.8rem;
   margin-bottom: 40px;
-  color: #2d3436;
+  padding-bottom: 10px;
+  border-bottom: 3px solid var(--primary-green);
+  display: inline-block;
 }
 
 .activities-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
 }
 
 .act-card {
-  background: #ffffff;
-  padding: 25px;
-  border-radius: 15px;
+  padding: 20px;
+  background: var(--soft-gray);
+  border-radius: 4px;
   display: flex;
   align-items: center;
-  gap: 15px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-  border-left: 5px solid #198754;
+  gap: 12px;
   font-weight: 600;
-  color: #444;
 }
 
 .card-icon {
-  color: #198754;
-  font-size: 1.4rem;
+  color: var(--primary-green);
 }
 
-/* Footer */
+/* Footer - Simple White */
 .about-footer {
   text-align: center;
   padding: 40px;
-  background: #f1f3f5;
-  color: #666;
-  border-top: 1px solid #e9ecef;
+  background: var(--white);
+  border-top: 1px solid #eee;
+  color: var(--text-muted);
+  font-size: 0.9rem;
 }
 
-/* Responsive Styles */
+/* Responsive */
 @media (max-width: 768px) {
   .vision-mission-grid {
     grid-template-columns: 1fr;
   }
-
   .about-hero h1 {
-    font-size: 2.5rem;
-  }
-
-  .about-hero {
-    padding: 60px 20px;
+    font-size: 2.2rem;
   }
 }

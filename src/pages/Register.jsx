@@ -1,64 +1,62 @@
 import { useContext } from "react";
-import {
-  FiUser,
-  FiHash,
-  FiBook,
-  FiMail,
-  FiPhone,
-  FiMapPin,
-  FiUploadCloud,
-} from "react-icons/fi";
+import { FiUser, FiBook, FiMail, FiUploadCloud } from "react-icons/fi";
 import { CourseContext } from "../context/CourseContext";
 import Header from "../components/Header";
 import "../styles/register.css";
 
 export default function Register() {
-  const {
-    formData,
-    setFormData,
-    handleChange,
-    handleFile,
+  const { formData, setFormData, handleChange, handleFile, filteredCourses } =
+    useContext(CourseContext);
 
-    filteredCourses,
-  } = useContext(CourseContext);
-
-  // SAVE TO SQL
-  const handleSqlSubmit = async (e) => {
+  // SAVE TO LOCAL STORAGE
+  const handleLocalSubmit = (e) => {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:5000/api/students", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      // 1. Pata data zilizopo tayari kwenye Local Storage (kama zipo)
+      const existingStudents =
+        JSON.parse(localStorage.getItem("tiamsa_students")) || [];
 
-      const data = await response.json();
+      // 2. Angalia kama RegNo tayari imeshasajiliwa
+      const isRegistered = existingStudents.find(
+        (student) => student.regNo === formData.regNo,
+      );
 
-      if (response.ok) {
-        alert("Safi! " + data.message);
-
-        setFormData({
-          f_name: "",
-          m_name: "",
-          l_name: "",
-          regNo: "",
-          level: "",
-          course: "",
-          email: "",
-          phone: "",
-          campus: "",
-          gender: "",
-          studentID: null,
-        });
-      } else {
-        //  RegNo tayari ipo
-        alert("Jaribu tena: " + data.message);
+      if (isRegistered) {
+        alert("Hitilafu: Namba hii ya usajili (RegNo) tayari imeshatumika!");
+        return;
       }
+
+      // 3. Ongeza mwanafunzi mpya kwenye list
+      const updatedStudents = [
+        ...existingStudents,
+        { ...formData, id: Date.now() },
+      ];
+
+      // 4. Hifadhi list mpya kwenye Local Storage
+      localStorage.setItem("tiamsa_students", JSON.stringify(updatedStudents));
+
+      alert(
+        "Hongera! Usajili wako umekamilika na umehifadhiwa (Local Storage).",
+      );
+
+      // 5. Safisha fomu
+      setFormData({
+        f_name: "",
+        m_name: "",
+        l_name: "",
+        regNo: "",
+        level: "",
+        course: "",
+        email: "",
+        phone: "",
+        campus: "",
+        gender: "",
+        studentID: null,
+      });
     } catch (error) {
-      alert("Hitilafu: Hakikisha umewasha SERVER");
+      alert("Kuna tatizo lilitokea wakati wa kuhifadhi data.");
+      console.error(error);
     }
   };
 
@@ -73,7 +71,7 @@ export default function Register() {
             <p>Jaza fomu hii kwa usahihi ili kujiunga na TIAMSA</p>
           </div>
 
-          <form className="register-form" onSubmit={handleSqlSubmit}>
+          <form className="register-form" onSubmit={handleLocalSubmit}>
             <h3 className="form-section-title">
               <FiUser /> Personal Information
             </h3>

@@ -1,6 +1,6 @@
 import React from "react";
 import Header from "../components/Header";
-import { FiTarget, FiEye, FiCheckCircle } from "react-icons/fi"; // Optional icons
+import { FiTarget, FiEye, FiCheckCircle } from "react-icons/fi";
 import "../styles/About.css";
 
 export default function About() {
@@ -8,68 +8,61 @@ export default function About() {
     <div className="about-page">
       <Header />
 
-      {/* Hero Section */}
       <section className="about-hero">
-        <div className="hero-overlay"></div>
         <div className="about-hero-content">
           <h1>About TIAMSA</h1>
-          <div className="underline"></div>
           <p>
-            TIAMSA (TIA Muslim Students Association) in Dar es Salaam is a
-            premier student organization dedicated to promoting unity, profound
-            knowledge, and core Islamic values among students at the Tanzania
-            Institute of Accountancy.
+            TIAMSA (TIA Muslim Students Association) Dar es Salaam is a
+            professional student body focused on academic excellence, spiritual
+            growth, and community unity at the Tanzania Institute of
+            Accountancy.
           </p>
         </div>
       </section>
 
-      {/* Main Content */}
-      <section className="about-main">
+      <main className="about-main">
         <div className="about-container">
           <div className="vision-mission-grid">
-            <div className="about-section info-card">
-              <FiTarget className="section-icon" />
-              <h2>Our Mission</h2>
+            <div className="info-card">
+              <h2>
+                <FiTarget /> Our Mission
+              </h2>
               <p>
-                To empower students spiritually, academically, and socially
-                while fostering brotherhood and leadership within the TIA
-                community.
+                To empower students spiritually and academically while fostering
+                leadership within the TIA community.
               </p>
             </div>
 
-            <div className="about-section info-card">
-              <FiEye className="section-icon" />
-              <h2>Our Vision</h2>
+            <div className="info-card">
+              <h2>
+                <FiEye /> Our Vision
+              </h2>
               <p>
-                To be a leading Muslim student association that shapes ethical,
-                knowledgeable, and responsible graduates prepared for the Ummah.
+                To produce ethical and knowledgeable graduates ready to serve
+                the society with integrity.
               </p>
             </div>
           </div>
 
-          <div className="about-section activities">
+          <div className="activities-section">
             <h2 className="section-title">Core Activities</h2>
             <div className="activities-cards">
               <div className="act-card">
-                <FiCheckCircle className="card-icon" />
-                <span>Islamic Classes & Talks</span>
+                <FiCheckCircle className="card-icon" /> Islamic Classes
               </div>
               <div className="act-card">
-                <FiCheckCircle className="card-icon" />
-                <span>Community Service & Charity</span>
+                <FiCheckCircle className="card-icon" /> Charity Works
               </div>
               <div className="act-card">
-                <FiCheckCircle className="card-icon" />
-                <span>Workshops & Seminars</span>
+                <FiCheckCircle className="card-icon" /> Academic Seminars
               </div>
               <div className="act-card">
-                <FiCheckCircle className="card-icon" />
-                <span>Sports & Cultural Events</span>
+                <FiCheckCircle className="card-icon" /> Sports Events
               </div>
             </div>
           </div>
         </div>
-      </section>
+      </main>
 
       <footer className="about-footer">
         <p>
