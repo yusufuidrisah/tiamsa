@@ -43,7 +43,6 @@
   border-bottom: 1px solid #f0f0f0;
 }
 
-/* Row Logic */
 .form-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -60,7 +59,6 @@
   grid-column: 1 / -1;
 }
 
-/* Inputs & Selects */
 .form-group input,
 .form-group select {
   width: 100%;
@@ -79,7 +77,6 @@
   box-shadow: 0 0 0 4px rgba(25, 135, 84, 0.1);
 }
 
-/* Floating Labels */
 .form-group label {
   position: absolute;
   top: 50%;
@@ -93,18 +90,17 @@
   padding: 0 5px;
 }
 
-/* Float Animation */
+/* Float Animation kwa Input na Select */
 .form-group input:focus + label,
 .form-group input:not(:placeholder-shown) + label,
 .form-group select:focus + label,
-.form-group select:not([value=""]) + label {
+.form-group select:valid + label {
   top: 0;
   font-size: 0.85rem;
   color: #198754;
   font-weight: 600;
 }
 
-/* File Upload Style */
 .file-upload-group {
   margin-top: 10px;
 }
@@ -133,7 +129,6 @@
   display: none;
 }
 
-/* Button */
 .submit-btn {
   width: 100%;
   margin-top: 30px;
@@ -154,7 +149,6 @@
   box-shadow: 0 8px 20px rgba(25, 135, 84, 0.25);
 }
 
-/* Responsive */
 @media (max-width: 600px) {
   .register-card {
     padding: 25px;

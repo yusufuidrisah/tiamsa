@@ -3,30 +3,23 @@ import { createContext, useState, useEffect } from "react";
 export const CourseContext = createContext();
 
 export function CourseProvider({ children }) {
-  const [formData, setFormData] = useState({
-    f_name: "",
-    m_name: "",
-    l_name: "",
-    regNo: "",
-    level: "",
-    course: "",
-    email: "",
-    phone: "",
-    campus: "",
-    gender: "",
-    studentID: null,
-  });
-
   const courseOptions = {
     certificate: [
       "Basic Technician Certificate in Accountancy (BTCA)",
       "Basic Technician Certificate in Procurement and Logistics Management (BTCPLM)",
       "Basic Technician Certificate in Business Administration (BTCBA)",
       "Basic Technician Certificate in Human Resource Management (BTCHRM)",
-      "Basic Technician Certificate in Marketing and Public Relations(BTCMPR)",
+      "Basic Technician Certificate in Marketing and Public Relations (BTCMPR)",
       "Basic Technician Certificate in Public Sector Accounting and Finance (BTCPSAF)",
     ],
-    diploma: ["DIT", "DBA", "Procurement"],
+    diploma: [
+      "Ordinary Diploma in Accountancy (DA)",
+      "Ordinary Diploma in Procurement and Logistics Management (DPLM)",
+      "Ordinary Diploma in Business Administration (DBA)",
+      "Ordinary Diploma in Human Resource Management (DHRM)",
+      "Ordinary Diploma in Marketing and Public Relations (DMPR)",
+      "Ordinary Diploma in Public Sector Accounting and Finance (DPSAF)",
+    ],
     degree: [
       "Bachelor Degree in Accounting (BAC)",
       "Bachelor Degree in Procurement and Logistics Management (BPLM)",
@@ -35,43 +28,36 @@ export function CourseProvider({ children }) {
       "Bachelor Degree in Marketing and Public Relations (BMPR)",
       "Bachelor Degree in Public Sector Accounting and Finance (BPSAF)",
     ],
-    masters: [
-      "Master of Science Degree in Accounting and Finance (MSc. ACC & FIN)",
-      "Master of Science in Procurement & Supply Management (MSc. PSM)",
-      "Master of Business Administration in Project Management (MBA PM)",
-      "Master in Human Resource Management with Information Technology [MHRM-IT]",
-      "Master of Science in Marketing and Public Relations [MSC MPR]",
-    ],
   };
 
-  const [filteredCourses, setFilteredCourses] = useState([]);
+  const [formData, setFormData] = useState({
+    f_name: "",
+    m_name: "",
+    l_name: "",
+    regNo: "",
+    level: "",
+    course: "",
+    year: "",
+    email: "",
+    phone: "",
+    campus: "Dar es Salaam",
+    gender: "",
+    studentID: null,
+  });
+
+  const [students, setStudents] = useState([]);
 
   useEffect(() => {
-    if (formData.level) {
-      setFilteredCourses(courseOptions[formData.level]);
-    } else {
-      setFilteredCourses([]);
-    }
-  }, [formData.level]);
+    const data = JSON.parse(localStorage.getItem("tiamsa_students")) || [];
+    setStudents(data);
+  }, []);
 
-  const handleFile = (e) => {
-    const file = e.target.files[0];
-    setFormData({ ...formData, studentID: file });
+  const saveToLS = (updatedList) => {
+    setStudents(updatedList);
+    localStorage.setItem("tiamsa_students", JSON.stringify(updatedList));
   };
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    // Save student to localStorage
-    let all = JSON.parse(localStorage.getItem("students")) || [];
-    all.push({ id: Date.now(), ...formData });
-    localStorage.setItem("students", JSON.stringify(all));
-
-    // Reset form
+  const resetForm = () => {
     setFormData({
       f_name: "",
       m_name: "",
@@ -79,30 +65,82 @@ export function CourseProvider({ children }) {
       regNo: "",
       level: "",
       course: "",
+      year: "",
       email: "",
       phone: "",
-      campus: "",
+      campus: "Dar es Salaam",
       gender: "",
       studentID: null,
     });
+  };
 
-    // Show alert
-    alert("Registration Successful!");
+  const handleRegister = (data, isStaff = false) => {
+    const exists = students.find((s) => s.regNo === data.regNo);
 
-    // Redirect to students list
+    if (exists) {
+      // Logic ya UPDATE (Edit)
+      const updatedList = students.map((s) =>
+        s.regNo === data.regNo ? { ...data, status: s.status } : s,
+      );
+      saveToLS(updatedList);
+      //alert("Taarifa zimebadilishwa kikamilifu!");
+    } else {
+      // Logic ya NEW registration
+      const newStudent = {
+        ...data,
+        id: Date.now(),
+        status: isStaff ? "registered" : "pending",
+      };
+      saveToLS([...students, newStudent]);
+      //alert("Usajili umekamilika!");
+    }
+    resetForm();
+    return true;
+  };
+
+  const updateStatus = (regNo, newStatus) => {
+    const updated = students.map((s) =>
+      s.regNo === regNo ? { ...s, status: newStatus } : s,
+    );
+    saveToLS(updated);
+  };
+
+  const deleteStudent = (regNo) => {
+    if (window.confirm("Futa mwanafunzi huyu?")) {
+      saveToLS(students.filter((s) => s.regNo !== regNo));
+    }
+  };
+
+  const getGraduaters = (levelFilter) => {
+    return students
+      .filter((s) => {
+        // Logic: Mwanafunzi ni graduater kama yuko mwaka wa mwisho wa level yake
+        const isYear1 = s.year === "1";
+        const isYear2 = s.year === "2";
+        const isYear3 = s.year === "3";
+
+        const isGrad =
+          (s.level === "certificate" && isYear1) ||
+          (s.level === "diploma" && isYear2) ||
+          (s.level === "degree" && isYear3);
+
+        return levelFilter ? isGrad && s.level === levelFilter : isGrad;
+      })
+      .filter((s) => s.status === "registered"); // Lazima awe ameshakuwa approved
   };
 
   return (
     <CourseContext.Provider
       value={{
+        students,
         formData,
         setFormData,
-        handleChange,
-        handleFile,
-        handleSubmit,
-        filteredCourses,
-        setFilteredCourses,
+        handleRegister,
+        updateStatus,
+        deleteStudent,
+        getGraduaters,
         courseOptions,
+        resetForm,
       }}
     >
       {children}

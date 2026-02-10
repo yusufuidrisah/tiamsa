@@ -44,7 +44,9 @@ export default function Home() {
 
       <footer className="home-footer">
         <div className="footer-content">
-          <p>© {new Date().getFullYear()} TIAMSA DSM. All Rights Reserved.</p>
+          <p>
+            © 2026 - {new Date().getFullYear()} TIAMSA DSM. All Rights Reserved.
+          </p>
         </div>
       </footer>
     </div>

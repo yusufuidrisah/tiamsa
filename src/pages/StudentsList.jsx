@@ -1,274 +1,143 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext } from "react";
+import { CourseContext } from "../context/CourseContext";
 import {
-  FiSearch,
+  FiEye,
   FiEdit2,
   FiTrash2,
-  FiEye,
-  FiCamera,
-  FiDownload,
-  FiChevronLeft,
-  FiChevronRight,
+  FiSearch,
   FiX,
+  FiSave,
+  FiMail,
+  FiPhone,
+  FiUser,
 } from "react-icons/fi";
 import "../styles/Student-list.css";
 
-const courseOptions = {
-  certificate: ["BTCA", "BTCPLM", "BTCBA", "BTCHRM", "BTCMPR", "BTCPSAF"],
-  diploma: ["DIT", "DBA", "Procurement"],
-  degree: ["BAC", "BPLM", "BBA", "BHRM", "BMPR", "BPSAF"],
-  masters: ["MSc ACC & FIN", "MSc PSM", "MBA PM", "MHRM-IT"],
-};
-
-const emptyForm = {
-  f_name: "",
-  m_name: "",
-  l_name: "",
-  regNo: "",
-  level: "",
-  course: "",
-  email: "",
-  phone: "",
-  campus: "Dar es Salaam",
-  gender: "",
-  studentID: null,
-};
-
 export default function StudentsManagement() {
-  const [students, setStudents] = useState([]);
-  const [filteredCourses, setFilteredCourses] = useState([]);
+  const {
+    students,
+    updateStatus,
+    deleteStudent,
+    getGraduaters,
+    handleRegister,
+    courseOptions,
+  } = useContext(CourseContext);
+
+  const [mainFilter, setMainFilter] = useState("pending");
+  const [levelFilter, setLevelFilter] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [viewStudent, setViewStudent] = useState(null);
-  const [form, setForm] = useState(emptyForm);
-  const [editMode, setEditMode] = useState(false);
-  const [alert, setAlert] = useState({ show: false, msg: "", type: "" });
-  const [currentPage, setCurrentPage] = useState(1);
-  const studentsPerPage = 5;
+  const [editStudent, setEditStudent] = useState(null);
 
-  useEffect(() => {
-    const data = JSON.parse(localStorage.getItem("students")) || [];
-    setStudents(data);
-  }, []);
+  // LOGIC YA KUCHUJA
+  let displayData =
+    mainFilter === "graduaters"
+      ? getGraduaters(levelFilter)
+      : students.filter(
+          (s) =>
+            s.status === mainFilter &&
+            (levelFilter ? s.level === levelFilter : true),
+        );
 
-  useEffect(() => {
-    if (form.level) {
-      setFilteredCourses(courseOptions[form.level] || []);
-    }
-  }, [form.level]);
+  if (searchTerm) {
+    displayData = displayData.filter(
+      (s) =>
+        `${s.f_name} ${s.l_name}`
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
+        s.regNo.toLowerCase().includes(searchTerm.toLowerCase()),
+    );
+  }
 
-  const showAlert = (show = false, type = "", msg = "") => {
-    setAlert({ show, type, msg });
-    if (show)
-      setTimeout(() => setAlert({ show: false, msg: "", type: "" }), 3000);
-  };
-
-  const saveLS = (data) =>
-    localStorage.setItem("students", JSON.stringify(data));
-
-  const handleChange = (e) =>
-    setForm({ ...form, [e.target.name]: e.target.value });
-
-  const handleFile = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    if (file.size > 1024 * 1024)
-      return showAlert(true, "error", "File too large! Max 1MB.");
-
-    const reader = new FileReader();
-    reader.onloadend = () =>
-      setForm((prev) => ({ ...prev, studentID: reader.result }));
-    reader.readAsDataURL(file);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    let updated;
-    if (editMode) {
-      updated = students.map((s) => (s.regNo === form.regNo ? form : s));
-      showAlert(true, "success", "Record updated successfully!");
+  const handleEditChange = (e) => {
+    const { name, value } = e.target;
+    if (name === "level") {
+      setEditStudent({
+        ...editStudent,
+        level: value,
+        year: value === "certificate" ? "1" : "",
+      });
     } else {
-      if (students.find((s) => s.regNo === form.regNo))
-        return showAlert(true, "error", "Registration Number already exists!");
-      updated = [...students, form];
-      showAlert(true, "success", "Student registered successfully!");
-    }
-    setStudents(updated);
-    saveLS(updated);
-    setForm(emptyForm);
-    setEditMode(false);
-  };
-
-  const handleDelete = (regNo) => {
-    if (window.confirm("Are you sure you want to delete this record?")) {
-      const filtered = students.filter((s) => s.regNo !== regNo);
-      setStudents(filtered);
-      saveLS(filtered);
-      showAlert(true, "error", "Record deleted.");
+      setEditStudent({ ...editStudent, [name]: value });
     }
   };
 
-  const filteredData = students.filter((s) => {
-    const searchStr =
-      `${s.f_name} ${s.m_name} ${s.l_name} ${s.regNo}`.toLowerCase();
-    return searchStr.includes(searchTerm.toLowerCase());
-  });
-
-  const totalPages = Math.ceil(filteredData.length / studentsPerPage);
-  const currentStudents = filteredData.slice(
-    (currentPage - 1) * studentsPerPage,
-    currentPage * studentsPerPage
-  );
+  const saveEdit = (e) => {
+    e.preventDefault();
+    handleRegister(editStudent, true);
+    setEditStudent(null);
+  };
 
   return (
     <div className="students-container">
-      {alert.show && (
-        <div className={`flash-alert ${alert.type}`}>{alert.msg}</div>
-      )}
-
-      <div className="page-header">
+      {/* HEADER SECTION */}
+      <div className="management-header">
         <h2>Student Management System</h2>
-        <button className="export-btn" onClick={() => window.print()}>
-          <FiDownload /> Print List
-        </button>
-      </div>
-
-      <div className="form-card">
-        <form onSubmit={handleSubmit}>
-          <h3>{editMode ? "Edit Student Details" : "Register New Student"}</h3>
-          <div className="input-group">
-            <input
-              name="f_name"
-              value={form.f_name}
-              onChange={handleChange}
-              placeholder="First Name"
-              required
-            />
-            <input
-              name="m_name"
-              value={form.m_name}
-              onChange={handleChange}
-              placeholder="Middle Name"
-            />
-            <input
-              name="l_name"
-              value={form.l_name}
-              onChange={handleChange}
-              placeholder="Last Name"
-              required
-            />
-            <input
-              name="regNo"
-              value={form.regNo}
-              onChange={handleChange}
-              placeholder="Registration No"
-              disabled={editMode}
-              required
-            />
-
-            <select
-              name="level"
-              value={form.level}
-              onChange={handleChange}
-              required
-            >
-              <option value="">Select Level</option>
-              {Object.keys(courseOptions).map((l) => (
-                <option key={l} value={l}>
-                  {l.toUpperCase()}
-                </option>
-              ))}
-            </select>
-
-            <select
-              name="course"
-              value={form.course}
-              onChange={handleChange}
-              required
-            >
-              <option value="">Select Course</option>
-              {filteredCourses.map((c) => (
-                <option key={c} value={c}>
-                  {c}
-                </option>
-              ))}
-            </select>
-
-            <input
-              name="phone"
-              value={form.phone}
-              onChange={handleChange}
-              placeholder="Phone Number"
-            />
-            <input
-              name="email"
-              value={form.email}
-              onChange={handleChange}
-              placeholder="Email Address"
-            />
-
-            <select
-              name="gender"
-              value={form.gender}
-              onChange={handleChange}
-              required
-            >
-              <option value="">Gender</option>
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-            </select>
-
-            <div className="file-upload-section">
-              <label htmlFor="studentID" className="file-label">
-                <FiCamera /> {form.studentID ? "Change Photo" : "Upload Photo"}
-              </label>
-              <input
-                id="studentID"
-                type="file"
-                accept="image/*"
-                onChange={handleFile}
-                style={{ display: "none" }}
-              />
-              {form.studentID && (
-                <div className="img-preview">
-                  <img src={form.studentID} alt="preview" />
-                  <button
-                    type="button"
-                    onClick={() => setForm({ ...form, studentID: null })}
-                  >
-                    <FiX />
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-          <button type="submit" className="submit-btn">
-            {editMode ? "Save Changes" : "Register Student"}
-          </button>
-        </form>
-      </div>
-
-      <div className="table-section">
-        <div className="search-box">
-          <FiSearch className="search-icon" />
+        <div className="search-wrapper">
+          <FiSearch className="search-icon-fixed" />
           <input
-            placeholder="Search by name or registration number..."
-            onChange={(e) => {
-              setSearchTerm(e.target.value);
-              setCurrentPage(1);
-            }}
+            type="text"
+            className="modern-search"
+            placeholder="Search name or RegNo..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
+          {searchTerm && (
+            <FiX
+              className="clear-search-icon"
+              onClick={() => setSearchTerm("")}
+            />
+          )}
         </div>
-        <div className="table-wrapper">
-          <table className="students-table">
-            <thead>
-              <tr>
-                <th>Profile</th>
-                <th>Reg No</th>
-                <th>Course</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentStudents.map((st) => (
+      </div>
+
+      {/* FILTER TABS */}
+      <div className="filter-tabs">
+        <button
+          className={mainFilter === "pending" ? "active" : ""}
+          onClick={() => setMainFilter("pending")}
+        >
+          Pending
+        </button>
+        <button
+          className={mainFilter === "registered" ? "active" : ""}
+          onClick={() => setMainFilter("registered")}
+        >
+          Registered
+        </button>
+        <button
+          className={mainFilter === "graduaters" ? "active" : ""}
+          onClick={() => setMainFilter("graduaters")}
+        >
+          Graduaters
+        </button>
+
+        <select
+          className="level-select-modern"
+          value={levelFilter}
+          onChange={(e) => setLevelFilter(e.target.value)}
+        >
+          <option value="">All Levels</option>
+          <option value="certificate">Certificate</option>
+          <option value="diploma">Diploma</option>
+          <option value="degree">Bachelor Degree</option>
+        </select>
+      </div>
+
+      {/* TABLE */}
+      <div className="table-wrapper">
+        <table className="students-table">
+          <thead>
+            <tr>
+              <th>Student Identity</th>
+              <th>Reg Number</th>
+              <th>Gender</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {displayData.length > 0 ? (
+              displayData.map((st) => (
                 <tr key={st.regNo}>
                   <td className="name-cell">
                     <img
@@ -276,106 +145,279 @@ export default function StudentsManagement() {
                       className="table-img"
                       alt=""
                     />
-                    <div>
-                      <strong>
-                        {st.f_name} {st.m_name} {st.l_name}
-                      </strong>
+                    <div className="student-info-cell">
+                      <span className="full-name">
+                        {st.f_name} {st.l_name}
+                      </span>
+                      <span className="sub-text">{st.course}</span>
                     </div>
                   </td>
                   <td>
                     <span className="reg-badge">{st.regNo}</span>
                   </td>
-                  <td>{st.course}</td>
+                  <td>
+                    <span className={`gender-pill ${st.gender}`}>
+                      {st.gender || "N/A"}
+                    </span>
+                  </td>
                   <td className="actions">
                     <button
-                      className="view-btn"
-                      title="View"
+                      className="action-btn view"
                       onClick={() => setViewStudent(st)}
                     >
                       <FiEye />
                     </button>
                     <button
-                      className="edit-btn"
-                      title="Edit"
-                      onClick={() => {
-                        setForm(st);
-                        setEditMode(true);
-                      }}
+                      className="action-btn edit"
+                      onClick={() => setEditStudent(st)}
                     >
                       <FiEdit2 />
                     </button>
                     <button
-                      className="delete-btn"
-                      title="Delete"
-                      onClick={() => handleDelete(st.regNo)}
+                      className="action-btn delete"
+                      onClick={() => deleteStudent(st.regNo)}
                     >
                       <FiTrash2 />
                     </button>
                   </td>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <div className="pagination">
-          <button
-            disabled={currentPage === 1}
-            onClick={() => setCurrentPage(currentPage - 1)}
-          >
-            <FiChevronLeft />
-          </button>
-          <span>
-            Page {currentPage} of {totalPages || 1}
-          </span>
-          <button
-            disabled={currentPage === totalPages || totalPages === 0}
-            onClick={() => setCurrentPage(currentPage + 1)}
-          >
-            <FiChevronRight />
-          </button>
-        </div>
+              ))
+            ) : (
+              <tr>
+                <td
+                  colSpan="4"
+                  style={{ textAlign: "center", padding: "20px" }}
+                >
+                  Hakuna data iliyopatikana.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
 
+      {/* VIEW MODAL */}
       {viewStudent && (
         <div className="overlay" onClick={() => setViewStudent(null)}>
-          <div className="student-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header-bg"></div>
-            <div className="modal-content">
+          <div
+            className="student-modal modern-view"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="modal-header-accent"></div>
+            <div className="modal-body">
               <img
-                src={viewStudent.studentID || "https://via.placeholder.com/100"}
-                alt="Profile"
+                src={viewStudent.studentID}
+                className="modal-profile-img"
+                alt="ID"
               />
               <h3>
-                {viewStudent.f_name} {viewStudent.m_name} {viewStudent.l_name}
+                {viewStudent.f_name} {viewStudent.l_name}
               </h3>
-              <div className="details-grid">
-                <p>
-                  <strong>Reg No:</strong> {viewStudent.regNo}
-                </p>
-                <p>
-                  <strong>Course:</strong> {viewStudent.course} (
-                  {viewStudent.level})
-                </p>
-                <p>
-                  <strong>Phone:</strong> {viewStudent.phone || "N/A"}
-                </p>
-                <p>
-                  <strong>Email:</strong> {viewStudent.email || "N/A"}
-                </p>
-                <p>
-                  <strong>Campus:</strong> {viewStudent.campus}
-                </p>
-                <p>
-                  <strong>Gender:</strong> {viewStudent.gender}
-                </p>
+              <p className="modal-subtitle">{viewStudent.course}</p>
+
+              <div className="info-grid-modern">
+                <div className="info-item">
+                  <strong>Reg No:</strong> <span>{viewStudent.regNo}</span>
+                </div>
+                <div className="info-item">
+                  <strong>Gender:</strong>
+                  <span className={`gender-text ${viewStudent.gender}`}>
+                    {viewStudent.gender}
+                  </span>
+                </div>
+                <div className="info-item">
+                  <strong>Level:</strong> <span>{viewStudent.level}</span>
+                </div>
+                <div className="info-item">
+                  <strong>Year:</strong> <span>{viewStudent.year || "1"}</span>
+                </div>
+                <div className="info-item">
+                  <strong>Campus:</strong> <span>{viewStudent.campus}</span>
+                </div>
+                <div className="info-item full">
+                  <strong>
+                    <FiMail /> Email:
+                  </strong>{" "}
+                  <span>{viewStudent.email}</span>
+                </div>
+                <div className="info-item full">
+                  <strong>
+                    <FiPhone /> Phone:
+                  </strong>{" "}
+                  <span>{viewStudent.phone}</span>
+                </div>
               </div>
-              <button
-                className="close-btn"
-                onClick={() => setViewStudent(null)}
-              >
-                Close
+
+              <div className="modal-footer-btns">
+                <button
+                  className="btn-close"
+                  onClick={() => setViewStudent(null)}
+                >
+                  Close
+                </button>
+                {viewStudent.status === "pending" && (
+                  <button
+                    className="btn-approve"
+                    onClick={() => {
+                      updateStatus(viewStudent.regNo, "registered");
+                      setViewStudent(null);
+                    }}
+                  >
+                    Approve
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* EDIT MODAL */}
+      {editStudent && (
+        <div className="overlay">
+          <div
+            className="modern-edit-card"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="edit-card-header">
+              <h3>Update Student Profile</h3>
+              <button className="close-x" onClick={() => setEditStudent(null)}>
+                <FiX />
               </button>
             </div>
+
+            <form onSubmit={saveEdit} className="edit-card-body">
+              <div className="form-section-row">
+                <div className="input-field">
+                  <label>First Name</label>
+                  <input
+                    name="f_name"
+                    value={editStudent.f_name}
+                    onChange={handleEditChange}
+                    required
+                  />
+                </div>
+                <div className="input-field">
+                  <label>Last Name</label>
+                  <input
+                    name="l_name"
+                    value={editStudent.l_name}
+                    onChange={handleEditChange}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="form-section-row">
+                <div className="input-field">
+                  <label>Gender</label>
+                  <select
+                    name="gender"
+                    value={editStudent.gender}
+                    onChange={handleEditChange}
+                    required
+                  >
+                    <option value="gender">select gender</option>
+
+                    <option value="male">Male</option>
+
+                    <option value="female">Female</option>
+                  </select>
+                </div>
+                <div className="input-field">
+                  <label>Level</label>
+                  <select
+                    name="level"
+                    value={editStudent.level}
+                    onChange={handleEditChange}
+                  >
+                    <option value="certificate">Certificate</option>
+                    <option value="diploma">Diploma</option>
+                    <option value="degree">Bachelor Degree</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="form-section-row">
+                <div className="input-field">
+                  <label>Year of Study</label>
+                  {editStudent.level === "certificate" ? (
+                    <input value="Year 1 Only" readOnly className="read-only" />
+                  ) : (
+                    <select
+                      name="year"
+                      value={editStudent.year}
+                      onChange={handleEditChange}
+                      required
+                    >
+                      <option value="1">Year 1</option>
+                      <option value="2">Year 2</option>
+                      {editStudent.level === "degree" && (
+                        <option value="3">Year 3</option>
+                      )}
+                    </select>
+                  )}
+                </div>
+                <div className="input-field">
+                  <label>Campus</label>
+                  <input
+                    name="campus"
+                    value={editStudent.campus}
+                    onChange={handleEditChange}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="input-field full">
+                <label>Course</label>
+                <select
+                  name="course"
+                  value={editStudent.course}
+                  onChange={handleEditChange}
+                >
+                  {courseOptions[editStudent.level]?.map((c) => (
+                    <option key={c} value={c}>
+                      {c}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="form-section-row">
+                <div className="input-field">
+                  <label>Email</label>
+                  <input
+                    name="email"
+                    value={editStudent.email}
+                    onChange={handleEditChange}
+                    required
+                  />
+                </div>
+                <div className="input-field">
+                  <label>Phone</label>
+                  <input
+                    name="phone"
+                    value={editStudent.phone}
+                    onChange={handleEditChange}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="edit-footer">
+                <button
+                  type="button"
+                  className="btn-cancel"
+                  onClick={() => setEditStudent(null)}
+                >
+                  Cancel
+                </button>
+                <button type="submit" className="btn-save">
+                  <FiSave /> Update Profile
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

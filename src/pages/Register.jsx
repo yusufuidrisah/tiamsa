@@ -1,74 +1,78 @@
 import { useContext } from "react";
-import { FiUser, FiBook, FiMail, FiUploadCloud } from "react-icons/fi";
+import Swal from "sweetalert2";
+import {
+  FiUser,
+  FiBook,
+  FiMail,
+  FiUploadCloud,
+  FiMapPin,
+} from "react-icons/fi";
 import { CourseContext } from "../context/CourseContext";
 import Header from "../components/Header";
 import "../styles/register.css";
 
 export default function Register() {
-  const { formData, setFormData, handleChange, handleFile, filteredCourses } =
+  const { formData, setFormData, handleRegister, courseOptions, students } =
     useContext(CourseContext);
 
-  // SAVE TO LOCAL STORAGE
+  const filteredCourses = formData.level ? courseOptions[formData.level] : [];
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleFile = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setFormData({ ...formData, studentID: reader.result });
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleLocalSubmit = (e) => {
     e.preventDefault();
 
-    try {
-      // 1. Pata data zilizopo tayari kwenye Local Storage (kama zipo)
-      const existingStudents =
-        JSON.parse(localStorage.getItem("tiamsa_students")) || [];
+    const isRegNoTaken = students.some(
+      (s) => s.regNo.toLowerCase() === formData.regNo.toLowerCase(),
+    );
 
-      // 2. Angalia kama RegNo tayari imeshasajiliwa
-      const isRegistered = existingStudents.find(
-        (student) => student.regNo === formData.regNo,
-      );
-
-      if (isRegistered) {
-        alert("Hitilafu: Namba hii ya usajili (RegNo) tayari imeshatumika!");
-        return;
-      }
-
-      // 3. Ongeza mwanafunzi mpya kwenye list
-      const updatedStudents = [
-        ...existingStudents,
-        { ...formData, id: Date.now() },
-      ];
-
-      // 4. Hifadhi list mpya kwenye Local Storage
-      localStorage.setItem("tiamsa_students", JSON.stringify(updatedStudents));
-
-      alert(
-        "Hongera! Usajili wako umekamilika na umehifadhiwa (Local Storage).",
-      );
-
-      // 5. Safisha fomu
-      setFormData({
-        f_name: "",
-        m_name: "",
-        l_name: "",
-        regNo: "",
-        level: "",
-        course: "",
-        email: "",
-        phone: "",
-        campus: "",
-        gender: "",
-        studentID: null,
+    if (isRegNoTaken) {
+      Swal.fire({
+        title: "Kosa!",
+        text: `Samahani, Namba ya usajili (${formData.regNo}) imeshatumika tayari!`,
+        icon: "error",
+        confirmButtonColor: "#d33",
       });
-    } catch (error) {
-      alert("Kuna tatizo lilitokea wakati wa kuhifadhi data.");
-      console.error(error);
+      return;
+    }
+
+    const success = handleRegister(formData, false);
+
+    if (success) {
+      Swal.fire({
+        title: "Usajili Umekamilika!",
+        text: "Maombi yako yametumwa kikamilifu. Subiri Admin ayathibitishe.",
+        icon: "success",
+        confirmButtonText: "Sawa",
+        confirmButtonColor: "#198754",
+      });
     }
   };
 
   return (
     <div className="register-page">
       <Header />
-
       <div className="register-container">
         <div className="register-card">
           <div className="register-header">
             <h1>Student Registration</h1>
-            <p>Jaza fomu hii kwa usahihi ili kujiunga na TIAMSA</p>
+            <p>
+              Jaza fomu hii kwa usahihi ili kujiunga na TIAMSA (Pending
+              Approval)
+            </p>
           </div>
 
           <form className="register-form" onSubmit={handleLocalSubmit}>
@@ -93,7 +97,6 @@ export default function Register() {
                   name="m_name"
                   value={formData.m_name}
                   onChange={handleChange}
-                  required
                   placeholder=" "
                 />
                 <label>Middle Name</label>
@@ -108,6 +111,34 @@ export default function Register() {
                   placeholder=" "
                 />
                 <label>Last Name</label>
+              </div>
+            </div>
+
+            <div className="form-row">
+              {/* --- GENDER SELECTION (MUHIMU KWA DASHBOARD) --- */}
+              <div className="form-group">
+                <select
+                  name="gender"
+                  value={formData.gender || ""}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value=""></option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                </select>
+                <label>Gender</label>
+              </div>
+              <div className="form-group">
+                <input
+                  type="text"
+                  name="campus"
+                  value={formData.campus || ""}
+                  onChange={handleChange}
+                  required
+                  placeholder=" "
+                />
+                <label>Campus</label>
               </div>
             </div>
 
@@ -137,7 +168,6 @@ export default function Register() {
                   <option value="certificate">Certificate</option>
                   <option value="diploma">Diploma</option>
                   <option value="degree">Degree</option>
-                  <option value="masters">Masters</option>
                 </select>
                 <label>Level</label>
               </div>
@@ -160,8 +190,27 @@ export default function Register() {
               <label>Course</label>
             </div>
 
+            {(formData.level === "diploma" || formData.level === "degree") && (
+              <div className="form-group full-width">
+                <select
+                  name="year"
+                  value={formData.year}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value=""></option>
+                  <option value="1">First Year</option>
+                  <option value="2">Second Year</option>
+                  {formData.level === "degree" && (
+                    <option value="3">Third Year</option>
+                  )}
+                </select>
+                <label>Study Year</label>
+              </div>
+            )}
+
             <h3 className="form-section-title">
-              <FiMail /> Contact & Others
+              <FiMail /> Contact Details
             </h3>
             <div className="form-row">
               <div className="form-group">
@@ -180,42 +229,11 @@ export default function Register() {
                   type="tel"
                   name="phone"
                   value={formData.phone}
-                  onChange={(e) => {
-                    const value = e.target.value.replace(/\D/g, "");
-                    if (value.length <= 10)
-                      setFormData({ ...formData, phone: value });
-                  }}
-                  required
-                  placeholder=" "
-                />
-                <label>Phone (e.g 0712...)</label>
-              </div>
-            </div>
-
-            <div className="form-row">
-              <div className="form-group">
-                <input
-                  type="text"
-                  name="campus"
-                  value={formData.campus}
                   onChange={handleChange}
                   required
                   placeholder=" "
                 />
-                <label>Campus</label>
-              </div>
-              <div className="form-group">
-                <select
-                  name="gender"
-                  value={formData.gender}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value=""></option>
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                </select>
-                <label>Gender</label>
+                <label>Phone Number</label>
               </div>
             </div>
 
@@ -224,13 +242,13 @@ export default function Register() {
                 <FiUploadCloud />
                 <span>
                   {formData.studentID
-                    ? "File Selected"
-                    : "Upload Student ID (Image/PDF)"}
+                    ? " Photo Uploaded"
+                    : "Upload Student Photo (Official Passport size)"}
                 </span>
                 <input
                   type="file"
                   name="studentID"
-                  accept="image/*,application/pdf"
+                  accept="image/*"
                   onChange={handleFile}
                   required
                 />
