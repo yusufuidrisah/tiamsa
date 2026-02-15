@@ -1,12 +1,5 @@
 import React, { useContext } from "react";
-import {
-  FiUsers,
-  FiUserCheck,
-  FiBell,
-  FiTrendingUp,
-  FiUserPlus,
-  FiClock,
-} from "react-icons/fi";
+import { FiUsers, FiTrendingUp, FiUserPlus, FiClock } from "react-icons/fi";
 import { CourseContext } from "../context/CourseContext";
 import "../styles/AdminDashboard.css";
 

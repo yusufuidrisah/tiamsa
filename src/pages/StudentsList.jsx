@@ -9,7 +9,6 @@ import {
   FiSave,
   FiMail,
   FiPhone,
-  FiUser,
 } from "react-icons/fi";
 import "../styles/Student-list.css";
 
@@ -389,6 +388,7 @@ export default function StudentsManagement() {
                   <label>Email</label>
                   <input
                     name="email"
+                    type="email"
                     value={editStudent.email}
                     onChange={handleEditChange}
                     required
@@ -398,6 +398,7 @@ export default function StudentsManagement() {
                   <label>Phone</label>
                   <input
                     name="phone"
+                    type="tel"
                     value={editStudent.phone}
                     onChange={handleEditChange}
                     required

@@ -1,12 +1,6 @@
 import { useContext } from "react";
 import Swal from "sweetalert2";
-import {
-  FiUser,
-  FiBook,
-  FiMail,
-  FiUploadCloud,
-  FiMapPin,
-} from "react-icons/fi";
+import { FiUser, FiBook, FiMail, FiUploadCloud } from "react-icons/fi";
 import { CourseContext } from "../context/CourseContext";
 import Header from "../components/Header";
 import "../styles/register.css";
@@ -115,7 +109,7 @@ export default function Register() {
             </div>
 
             <div className="form-row">
-              {/* --- GENDER SELECTION (MUHIMU KWA DASHBOARD) --- */}
+              {/* --- GENDER SELECTION */}
               <div className="form-group">
                 <select
                   name="gender"
