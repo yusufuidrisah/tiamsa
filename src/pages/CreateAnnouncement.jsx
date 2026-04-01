@@ -1,114 +1,232 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useRef } from "react";
 import { AnnouncementsContext } from "../context/AnnouncementsContext";
-import { FiSend, FiTrash2, FiAlertCircle } from "react-icons/fi";
+import {
+  FiSend,
+  FiTrash2,
+  FiAlertCircle,
+  FiEdit2,
+  FiCheck,
+  FiX,
+  FiSearch,
+  FiPaperclip,
+} from "react-icons/fi";
 import "../styles/CreateAnnouncement.css";
 
-export default function AnnouncementsList() {
-  const { announcements, addAnnouncement, deleteAnnouncement } =
-    useContext(AnnouncementsContext);
+export default function CreateAnnouncement() {
+  const {
+    announcements,
+    addAnnouncement,
+    deleteAnnouncement,
+    updateAnnouncement,
+  } = useContext(AnnouncementsContext);
 
-  const [newAnnouncement, setNewAnnouncement] = useState({
+  const [formData, setFormData] = useState({
     title: "",
     content: "",
+    attachment: null,
   });
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
+  const [currentId, setCurrentId] = useState(null);
+  const fileInputRef = useRef(null);
 
-  const handleChange = (e) => {
-    setNewAnnouncement({ ...newAnnouncement, [e.target.name]: e.target.value });
-  };
-
-  const handleAdd = (e) => {
-    e.preventDefault();
-    if (!newAnnouncement.title.trim() || !newAnnouncement.content.trim()) {
-      return alert("Tafadhali jaza kichwa cha habari na maelezo.");
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) return alert("File under 2MB only.");
+      const reader = new FileReader();
+      reader.onloadend = () =>
+        setFormData({ ...formData, attachment: reader.result });
+      reader.readAsDataURL(file);
     }
-
-    addAnnouncement(newAnnouncement.title, newAnnouncement.content);
-    setNewAnnouncement({ title: "", content: "" });
   };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (isEditing) {
+      updateAnnouncement(currentId, formData);
+      setIsEditing(false);
+    } else {
+      addAnnouncement(formData.title, formData.content, formData.attachment);
+    }
+    setFormData({ title: "", content: "", attachment: null });
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const handleEdit = (a) => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    setIsEditing(true);
+    setCurrentId(a.id);
+    setFormData({
+      title: a.title,
+      content: a.description || a.content,
+      attachment: a.attachment,
+    });
+  };
+
+  const filtered = announcements
+    .filter((a) => {
+      const title = a.title?.toLowerCase() || "";
+      const content = (a.description || a.content || "").toLowerCase();
+      const term = searchTerm.toLowerCase();
+
+      return title.includes(term) || content.includes(term);
+    })
+    .slice(0, 3);
 
   return (
-    <div className="announcements-container">
-      <div className="announcement-header">
-        <h2>
-          <FiAlertCircle /> Announcements Management
-        </h2>
-        <p>Create and manage all TIAMSA announcements here.</p>
-      </div>
+    <div className="pro-admin-container">
+      <header className="pro-header">
+        <div className="title-area">
+          <h2>
+            <FiAlertCircle /> Announcement Manager
+          </h2>
+          <p>Create, update and manage portal notifications</p>
+        </div>
+      </header>
 
-      {/* FORM CARD */}
-      <div className="announcement-form-card">
-        <form onSubmit={handleAdd}>
-          <div className="input-field">
-            <label>Announcement Title</label>
+      {/* --- PROFESSIONAL COMPACT FORM --- */}
+      <section className={`pro-card ${isEditing ? "is-editing" : ""}`}>
+        <form onSubmit={handleSubmit}>
+          <div className="pro-form-row">
+            {/* Title Input */}
+            <div className="pro-input-group flex-2">
+              <label className="pro-label">Announcement Title</label>
+              <input
+                type="text"
+                placeholder="Ex: Graduation Ceremony 2026"
+                value={formData.title}
+                onChange={(e) =>
+                  setFormData({ ...formData, title: e.target.value })
+                }
+                required
+              />
+            </div>
+
+            {/* File Input - Placed next to title for compactness */}
+            <div className="pro-input-group flex-1">
+              <label className="pro-label">Attachment (Optional)</label>
+              <div className="pro-file-wrapper">
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  accept="image/*,application/pdf"
+                  id="file"
+                  hidden
+                />
+                <label htmlFor="file" className="pro-file-btn">
+                  <FiPaperclip />{" "}
+                  {formData.attachment ? "File Ready" : "Upload Image/PDF"}
+                </label>
+                {formData.attachment && (
+                  <button
+                    type="button"
+                    className="pro-remove-link"
+                    onClick={() =>
+                      setFormData({ ...formData, attachment: null })
+                    }
+                  >
+                    Remove
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Content Area */}
+          <div className="pro-input-group">
+            <label className="pro-label">Full Description</label>
+            <textarea
+              placeholder="Detailed information for the students..."
+              value={formData.content}
+              onChange={(e) =>
+                setFormData({ ...formData, content: e.target.value })
+              }
+              required
+            />
+          </div>
+
+          <div className="pro-form-footer">
+            <div className="spacer"></div>
+            <div className="btn-group">
+              {isEditing && (
+                <button
+                  type="button"
+                  className="btn-cancel"
+                  onClick={() => {
+                    setIsEditing(false);
+                    setFormData({ title: "", content: "", attachment: null });
+                  }}
+                >
+                  Discard Changes
+                </button>
+              )}
+              <button type="submit" className="btn-save">
+                {isEditing ? "Update Announcement" : "Publish Announcement"}
+              </button>
+            </div>
+          </div>
+        </form>
+      </section>
+
+      {/* --- TABLE SECTION --- */}
+      <section className="pro-list-area">
+        <div className="pro-list-header">
+          <h3>Recent Postings</h3>
+          <div className="pro-search">
+            <FiSearch className="pro-search-icon" />
             <input
               type="text"
-              name="title"
-              placeholder="Mfano: Taarifa ya Mitihani..."
-              value={newAnnouncement.title}
-              onChange={handleChange}
+              placeholder="Search title..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
+        </div>
 
-          <div className="input-field">
-            <label>Detailed Content (Supports New Lines)</label>
-            <textarea
-              name="content"
-              placeholder="Andika tangazo lako hapa. Ukibonyeza 'Enter' kwenda mstari mpya, itaonekana hivyo hivyo..."
-              value={newAnnouncement.content}
-              onChange={handleChange}
-            />
-          </div>
-
-          <button type="submit" className="publish-btn">
-            <FiSend /> Publish Announcement
-          </button>
-        </form>
-      </div>
-
-      {/* TABLE SECTION */}
-      <div className="announcement-list-section">
-        <h3>Recent Announcements</h3>
-        <div className="table-responsive">
-          <table className="announcements-table">
+        <div className="pro-table-wrapper">
+          <table className="pro-table">
             <thead>
               <tr>
-                <th>Title</th>
-                <th>Content Description</th>
-                <th className="text-center">Action</th>
+                <th>Post Title</th>
+                <th>Content Brief</th>
+                <th>Attachment</th>
+                <th className="text-right">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {announcements.length === 0 ? (
-                <tr>
-                  <td colSpan="3" className="no-data">
-                    No announcements have been published yet.
+              {filtered.map((a) => (
+                <tr key={a.id}>
+                  <td className="pro-td-title">{a.title}</td>
+                  <td className="pro-td-desc">{a.description || a.content}</td>
+                  <td>
+                    {a.attachment
+                      ? a.attachment.includes("image")
+                        ? "🖼️ Image"
+                        : "📄 PDF"
+                      : "—"}
+                  </td>
+                  <td className="text-right">
+                    <button
+                      className="pro-action-btn edit"
+                      onClick={() => handleEdit(a)}
+                    >
+                      <FiEdit2 />
+                    </button>
+                    <button
+                      className="pro-action-btn del"
+                      onClick={() => deleteAnnouncement(a.id)}
+                    >
+                      <FiTrash2 />
+                    </button>
                   </td>
                 </tr>
-              ) : (
-                announcements.map((a) => (
-                  <tr key={a.id}>
-                    <td data-label="Title" className="title-td">
-                      {a.title}
-                    </td>
-                    <td data-label="Content" className="content-td">
-                      {a.description || a.content}
-                    </td>
-                    <td data-label="Action" className="text-center">
-                      <button
-                        className="delete-icon-btn"
-                        onClick={() => deleteAnnouncement(a.id)}
-                        title="Futa Tangazo"
-                      >
-                        <FiTrash2 />
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              )}
+              ))}
             </tbody>
           </table>
         </div>
-      </div>
+      </section>
     </div>
   );
 }
