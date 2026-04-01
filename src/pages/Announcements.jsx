@@ -30,7 +30,7 @@ export default function Announcements() {
         <Header />
         <div className="tiamsa-hero">
           <div className="hero-inner">
-            <span className="hero-tag">TIAMSA DSM</span>
+            {/* <span className="hero-tag">TIAMSA DSM</span> */}
             <h1>Official Updates & Notices</h1>
             <p className="hero-description">
               Access the latest administrative news, academic circulars, and
