@@ -92,6 +92,13 @@ body {
   flex-wrap: wrap;
 }
 
+.filter-tabs select:focus {
+  border-color: var(--primary-green);
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(0, 128, 0, 0.1); /* Glow laini ya kijani */
+  background-color: #f9fff9;
+}
+
 .filter-tabs button {
   padding: 10px 20px;
   border: 1px solid var(--border-color);
@@ -385,19 +392,38 @@ body {
 }
 .input-field input,
 .input-field select {
-  padding: 12px;
-  border: 1.5px solid var(--border-color);
-  border-radius: 10px;
-  font-size: 14px;
-  transition: 0.2s;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background-color: white;
+  cursor: pointer;
+  appearance: none;
+  margin-top: 5px;
 }
 
-.input-field input:focus {
+.input-field input:focus,
+.input-field select:focus {
   border-color: var(--primary-green);
   outline: none;
+  box-shadow: 0 0 0 4px rgba(0, 128, 0, 0.1); /* Glow laini ya kijani */
+  background-color: #f9fff9;
 }
+
+.input-field select option {
+  padding: 10px;
+  background-color: #fff;
+  color: #333;
+}
+
 .input-field.full {
-  margin-top: 10px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.input-field.full input:focus {
+  border-color: var(--primary-green);
+  outline: none;
 }
 
 .edit-footer {

@@ -1,21 +1,32 @@
 import React, { useContext } from "react";
-import { FiUsers, FiTrendingUp, FiUserPlus, FiClock } from "react-icons/fi";
+import {
+  FiUsers,
+  FiTrendingUp,
+  FiUserPlus,
+  FiClock,
+  FiAward,
+  FiCheckCircle,
+} from "react-icons/fi";
 import { CourseContext } from "../context/CourseContext";
 import "../styles/AdminDashboard.css";
 
 export default function AdminDashboardContent() {
   const { students } = useContext(CourseContext);
 
-  // LOGIC YA KUHESABU DATA HALISI
+  // DATA CALCULATION LOGIC
   const totalStudents = students.length;
   const maleStudents = students.filter((s) => s.gender === "male").length;
   const femaleStudents = students.filter((s) => s.gender === "female").length;
   const pendingStudents = students.filter((s) => s.status === "pending").length;
 
-  // Kuhesabu waliojisajili leo (Today's Registration)
+  // NEW: Logic for Total Graduates
+  const totalGraduates = students.filter(
+    (s) => s.status === "graduated",
+  ).length;
+
+  // Logic for Today's Registration
   const today = new Date().toLocaleDateString();
   const registeredToday = students.filter((s) => {
-    // Tunachukua mwanafunzi aliyeumbwa leo kwa kutumia ID (Date.now())
     const studentDate = new Date(s.id).toLocaleDateString();
     return studentDate === today;
   }).length;
@@ -52,9 +63,9 @@ export default function AdminDashboardContent() {
       type: "highlight",
     },
     {
-      label: "Growth Rate",
-      value: totalStudents > 0 ? "Active" : "Stable",
-      icon: <FiTrendingUp />,
+      label: "Total Graduates",
+      value: totalGraduates,
+      icon: <FiAward />,
       type: "normal",
     },
   ];
@@ -78,13 +89,12 @@ export default function AdminDashboardContent() {
               </div>
               <span className="icon-wrapper">{stat.icon}</span>
             </div>
-            {/* Hii inatengeneza kale kamstari ka rangi chini */}
+            {/* Dark green indicator line at the bottom */}
             <div className="card-indicator"></div>
           </div>
         ))}
       </div>
 
-      {/* Sehemu ya nyongeza: Recent Activity Preview */}
       <div className="recent-section">
         <h3>Recent Registrations</h3>
         <div className="recent-list">
@@ -99,7 +109,7 @@ export default function AdminDashboardContent() {
                 </div>
                 <div className="recent-details">
                   <strong>
-                    {s.f_name} {s.l_name}
+                    {s.f_name} {s.m_name} {s.l_name}
                   </strong>
                   <span>{s.course}</span>
                 </div>

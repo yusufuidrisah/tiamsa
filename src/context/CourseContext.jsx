@@ -88,7 +88,7 @@ export function CourseProvider({ children }) {
       // Logic ya NEW registration
       const newStudent = {
         ...data,
-        id: Date.now(),
+        id: Date.now(), //nitachange kwenye db
         status: isStaff ? "registered" : "pending",
       };
       saveToLS([...students, newStudent]);
@@ -106,7 +106,7 @@ export function CourseProvider({ children }) {
   };
 
   const deleteStudent = (regNo) => {
-    if (window.confirm("Futa mwanafunzi huyu?")) {
+    if (window.confirm("Delete this student?")) {
       saveToLS(students.filter((s) => s.regNo !== regNo));
     }
   };

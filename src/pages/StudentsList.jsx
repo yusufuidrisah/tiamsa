@@ -168,7 +168,14 @@ export default function StudentsManagement() {
                     </button>
                     <button
                       className="action-btn edit"
-                      onClick={() => setEditStudent(st)}
+                      onClick={() =>
+                        setEditStudent({
+                          ...st,
+                          level: "",
+                          year: "",
+                          course: "",
+                        })
+                      }
                     >
                       <FiEdit2 />
                     </button>
@@ -297,6 +304,15 @@ export default function StudentsManagement() {
                   />
                 </div>
                 <div className="input-field">
+                  <label>Middle Name</label>
+                  <input
+                    name="f_name"
+                    value={editStudent.m_name}
+                    onChange={handleEditChange}
+                    required
+                  />
+                </div>
+                <div className="input-field">
                   <label>Last Name</label>
                   <input
                     name="l_name"
@@ -330,6 +346,7 @@ export default function StudentsManagement() {
                     value={editStudent.level}
                     onChange={handleEditChange}
                   >
+                    <option value=""> Select level </option>
                     <option value="certificate">Certificate</option>
                     <option value="diploma">Diploma</option>
                     <option value="degree">Bachelor Degree</option>
@@ -372,14 +389,18 @@ export default function StudentsManagement() {
                 <label>Course</label>
                 <select
                   name="course"
-                  value={editStudent.course}
+                  value={editStudent.course || ""}
                   onChange={handleEditChange}
+                  required
                 >
-                  {courseOptions[editStudent.level]?.map((c) => (
-                    <option key={c} value={c}>
-                      {c}
-                    </option>
-                  ))}
+                  <option value=""> Select Course </option>
+
+                  {editStudent.level &&
+                    courseOptions[editStudent.level]?.map((c) => (
+                      <option key={c} value={c}>
+                        {c}
+                      </option>
+                    ))}
                 </select>
               </div>
 
