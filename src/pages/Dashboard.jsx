@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { FiGrid, FiUsers, FiBell, FiLogOut, FiMenu, FiX } from "react-icons/fi";
+import Swal from "sweetalert2";
 import "../styles/Dashboard.css";
 import AnnouncementsList from "../pages/CreateAnnouncement";
 import StudentsManagement from "../pages/StudentsList";
@@ -9,8 +10,20 @@ export default function AdminDashboard() {
   const [active, setActive] = useState("dashboard");
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const handleLogout = () => {
-    if (window.confirm("Je, unataka kutoka kwenye mfumo?")) {
+  const handleLogout = async () => {
+    const result = await Swal.fire({
+      title: "Log out?",
+      text: "You will be returned to the admin login page.",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Log out",
+      cancelButtonText: "Stay here",
+      confirmButtonColor: "#115c3a",
+      cancelButtonColor: "#94a3b8",
+      reverseButtons: true,
+    });
+
+    if (result.isConfirmed) {
       localStorage.removeItem("tiamsa_token");
       window.location.href = "/admin/login";
     }

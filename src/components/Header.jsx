@@ -15,6 +15,7 @@ import logoimage from "../assets/logo.png";
 export default function Header() {
   const [open, setOpen] = useState(false);
   const location = useLocation();
+  const isHomePage = location.pathname === "/";
 
   // Kufunga menu mwanafunzi anapobonyeza link (kwenye simu)
   useEffect(() => {
@@ -22,7 +23,7 @@ export default function Header() {
   }, [location]);
 
   return (
-    <nav className="nav">
+    <nav className={`nav ${isHomePage ? "nav-home" : ""}`}>
       <div className="nav-container">
         <Link to="/" className="logo-section">
           <img src={logoimage} alt="Logo" className="logo-png" />
@@ -67,10 +68,24 @@ export default function Header() {
         </div>
 
         {/* Hamburger Icon */}
-        <div className="menu-icon" onClick={() => setOpen(!open)}>
+        <button
+          type="button"
+          className="menu-icon"
+          aria-label={open ? "Close navigation menu" : "Open navigation menu"}
+          aria-expanded={open}
+          onClick={() => setOpen(!open)}
+        >
           {open ? <FiX /> : <FiMenu />}
-        </div>
+        </button>
       </div>
+      {open && (
+        <button
+          type="button"
+          className="nav-overlay"
+          aria-label="Close navigation overlay"
+          onClick={() => setOpen(false)}
+        />
+      )}
     </nav>
   );
 }

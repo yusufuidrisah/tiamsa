@@ -1,6 +1,13 @@
 import React from "react";
 import Header from "../components/Header";
-import { FiTarget, FiEye, FiCheckCircle } from "react-icons/fi";
+import {
+  FiTarget,
+  FiEye,
+  FiCheckCircle,
+  FiBookOpen,
+  FiUsers,
+  FiHeart,
+} from "react-icons/fi";
 import "../styles/About.css";
 
 export default function About() {
@@ -9,19 +16,61 @@ export default function About() {
       <Header />
 
       <section className="about-hero">
-        <div className="about-hero-content">
-          <h1>About TIAMSA</h1>
-          <p>
-            TIAMSA (TIA Muslim Students Association) Dar es Salaam is a
-            professional student body focused on academic excellence, spiritual
-            growth, and community unity at the Tanzania Institute of
-            Accountancy.
-          </p>
+        <div className="about-hero-shell">
+          <div className="about-hero-content">
+            <span className="about-tag">Who We Are</span>
+            <h1>About TIAMSA</h1>
+            <p>
+              TIAMSA (TIA Muslim Students Association) Dar es Salaam is a
+              student association focused on spiritual growth, academic
+              excellence, leadership, and unity at the Tanzania Institute of
+              Accountancy.
+            </p>
+
+            <div className="about-pill-row">
+              <div className="about-pill">
+                <FiHeart />
+                <span>Spiritual development</span>
+              </div>
+              <div className="about-pill">
+                <FiBookOpen />
+                <span>Academic support</span>
+              </div>
+              <div className="about-pill">
+                <FiUsers />
+                <span>Student community</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="about-hero-panel">
+            <div className="about-panel-label">Our Focus</div>
+            <h2>Helping students grow in faith, knowledge, and character.</h2>
+            <p>
+              We create a space where students can stay informed, participate
+              in meaningful activities, and build a strong sense of belonging.
+            </p>
+          </div>
         </div>
       </section>
 
       <main className="about-main">
         <div className="about-container">
+          <section className="about-intro-grid">
+            <div className="intro-card">
+              <strong>Faith</strong>
+              <span>Programs that nurture spiritual discipline and values.</span>
+            </div>
+            <div className="intro-card">
+              <strong>Learning</strong>
+              <span>Academic encouragement and knowledge-sharing activities.</span>
+            </div>
+            <div className="intro-card">
+              <strong>Unity</strong>
+              <span>A supportive student network built on service and respect.</span>
+            </div>
+          </section>
+
           <div className="vision-mission-grid">
             <div className="info-card">
               <h2>
@@ -39,7 +88,7 @@ export default function About() {
               </h2>
               <p>
                 To produce ethical and knowledgeable graduates ready to serve
-                the society with integrity.
+                society with integrity.
               </p>
             </div>
           </div>
@@ -65,10 +114,7 @@ export default function About() {
       </main>
 
       <footer className="about-footer">
-        <p>
-          © {new Date().getFullYear()} TIAMSA Dar es Salaam. All Rights
-          Reserved.
-        </p>
+        <p>Copyright {new Date().getFullYear()} TIAMSA Dar es Salaam. All rights reserved.</p>
       </footer>
     </div>
   );

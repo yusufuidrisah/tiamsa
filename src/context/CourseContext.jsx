@@ -1,4 +1,5 @@
 import { createContext, useState, useEffect } from "react";
+import Swal from "sweetalert2";
 
 export const CourseContext = createContext();
 
@@ -98,16 +99,49 @@ export function CourseProvider({ children }) {
     return true;
   };
 
-  const updateStatus = (regNo, newStatus) => {
+  const updateStatus = async (
+    regNo,
+    newStatus,
+    studentName = "Student",
+  ) => {
     const updated = students.map((s) =>
       s.regNo === regNo ? { ...s, status: newStatus } : s,
     );
     saveToLS(updated);
+
+    if (newStatus === "registered") {
+      await Swal.fire({
+        title: "Approved",
+        text: `${studentName} has been approved successfully.`,
+        icon: "success",
+        confirmButtonText: "OK",
+        confirmButtonColor: "#115c3a",
+      });
+    }
   };
 
-  const deleteStudent = (regNo) => {
-    if (window.confirm("Delete this student?")) {
+  const deleteStudent = async (regNo, studentName = regNo) => {
+    const result = await Swal.fire({
+      title: "Delete student record?",
+      text: `${studentName} will be removed from the system. This action cannot be undone.`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Delete student",
+      cancelButtonText: "Cancel",
+      confirmButtonColor: "#dc2626",
+      cancelButtonColor: "#94a3b8",
+      reverseButtons: true,
+    });
+
+    if (result.isConfirmed) {
       saveToLS(students.filter((s) => s.regNo !== regNo));
+      await Swal.fire({
+        title: "Deleted",
+        text: `${studentName} has been removed successfully.`,
+        icon: "success",
+        confirmButtonText: "OK",
+        confirmButtonColor: "#115c3a",
+      });
     }
   };
 

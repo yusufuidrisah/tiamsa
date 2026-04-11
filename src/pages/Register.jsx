@@ -64,8 +64,8 @@ export default function Register() {
           <div className="register-header">
             <h1>Student Registration</h1>
             <p>
-              Jaza fomu hii kwa usahihi ili kujiunga na TIAMSA (Pending
-              Approval)
+              Please fill out this form accurately to apply to join TIAMSA
+              (Pending Approval).
             </p>
           </div>
 

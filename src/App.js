@@ -1,5 +1,6 @@
 import React from "react";
 import { CourseProvider } from "./context/CourseContext";
+import { AnnouncementsProvider } from "./context/AnnouncementsContext";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import About from "./pages/About";
@@ -11,16 +12,18 @@ import Dashboard from "./pages/Dashboard";
 export default function App() {
   return (
     <CourseProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/Announcements" element={<Announcements />} />
-          <Route path="/admin/login" element={<AdminLogin />} />
-          <Route path="/admin/dashboard" element={<Dashboard />} />
-        </Routes>
-      </Router>
+      <AnnouncementsProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/announcements" element={<Announcements />} />
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin/dashboard" element={<Dashboard />} />
+          </Routes>
+        </Router>
+      </AnnouncementsProvider>
     </CourseProvider>
   );
 }

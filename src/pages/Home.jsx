@@ -1,5 +1,5 @@
 import React from "react";
-import { FiUserPlus, FiArrowRight } from "react-icons/fi";
+import { FiUserPlus, FiArrowRight, FiBookOpen, FiHeart, FiUsers } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import Header from "../components/Header";
 import heroImage from "../assets/tiamsa-back-ground.jpeg";
@@ -30,6 +30,21 @@ export default function Home() {
               academically at the Tanzania Institute of Accountancy.
             </p>
 
+            <div className="hero-points">
+              <div className="hero-point">
+                <FiHeart />
+                <span>Faith-centered growth</span>
+              </div>
+              <div className="hero-point">
+                <FiBookOpen />
+                <span>Academic support</span>
+              </div>
+              <div className="hero-point">
+                <FiUsers />
+                <span>Strong student community</span>
+              </div>
+            </div>
+
             <div className="hero-cta-group">
               <Link to="/register" className="btn btn-primary">
                 <FiUserPlus /> Register Now
@@ -39,14 +54,35 @@ export default function Home() {
               </Link>
             </div>
           </div>
+
+          <div className="hero-side-card">
+            <div className="hero-side-label">Why Join TIAMSA</div>
+            <h2>One place for spiritual, academic, and student-life support.</h2>
+            <p>
+              Stay connected to announcements, activities, and a welcoming
+              community built for TIA students.
+            </p>
+            <div className="hero-side-stats">
+              <div>
+                <strong>Students</strong>
+                <span>Registration support</span>
+              </div>
+              <div>
+                <strong>Updates</strong>
+                <span>Official announcements</span>
+              </div>
+              <div>
+                <strong>Community</strong>
+                <span>Events and engagement</span>
+              </div>
+            </div>
+          </div>
         </div>
       </main>
 
       <footer className="home-footer">
         <div className="footer-content">
-          <p>
-            © 2026 - {new Date().getFullYear()} TIAMSA DSM. All Rights Reserved.
-          </p>
+          <p>Copyright {new Date().getFullYear()} TIAMSA DSM. All rights reserved.</p>
         </div>
       </footer>
     </div>

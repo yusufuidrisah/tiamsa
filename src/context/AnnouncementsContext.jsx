@@ -1,4 +1,5 @@
 import { createContext, useEffect, useState } from "react";
+import Swal from "sweetalert2";
 
 export const AnnouncementsContext = createContext();
 
@@ -12,7 +13,7 @@ export function AnnouncementsProvider({ children }) {
     localStorage.setItem("announcements", JSON.stringify(announcements));
   }, [announcements]);
 
-  const addAnnouncement = (title, content, attachment) => {
+  const addAnnouncement = async (title, content, attachment) => {
     const newEntry = {
       id: Date.now(),
       title,
@@ -21,9 +22,16 @@ export function AnnouncementsProvider({ children }) {
       date: new Date().toISOString().split("T")[0],
     };
     setAnnouncements((prev) => [newEntry, ...prev]);
+    await Swal.fire({
+      title: "Published",
+      text: `"${title}" has been published successfully.`,
+      icon: "success",
+      confirmButtonText: "OK",
+      confirmButtonColor: "#115c3a",
+    });
   };
 
-  const updateAnnouncement = (id, updatedData) => {
+  const updateAnnouncement = async (id, updatedData) => {
     setAnnouncements((prev) =>
       prev.map((ann) =>
         ann.id === id
@@ -36,11 +44,37 @@ export function AnnouncementsProvider({ children }) {
           : ann,
       ),
     );
+    await Swal.fire({
+      title: "Updated",
+      text: `"${updatedData.title}" has been updated successfully.`,
+      icon: "success",
+      confirmButtonText: "OK",
+      confirmButtonColor: "#115c3a",
+    });
   };
 
-  const deleteAnnouncement = (id) => {
-    if (window.confirm("Are you sure you want to delete this announcement?")) {
+  const deleteAnnouncement = async (id, title = "this announcement") => {
+    const result = await Swal.fire({
+      title: "Delete announcement?",
+      text: `"${title}" will no longer be visible to students.`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Delete announcement",
+      cancelButtonText: "Cancel",
+      confirmButtonColor: "#dc2626",
+      cancelButtonColor: "#94a3b8",
+      reverseButtons: true,
+    });
+
+    if (result.isConfirmed) {
       setAnnouncements(announcements.filter((a) => a.id !== id));
+      await Swal.fire({
+        title: "Deleted",
+        text: `"${title}" has been deleted successfully.`,
+        icon: "success",
+        confirmButtonText: "OK",
+        confirmButtonColor: "#115c3a",
+      });
     }
   };
 

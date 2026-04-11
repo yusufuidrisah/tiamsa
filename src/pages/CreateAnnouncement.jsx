@@ -1,12 +1,9 @@
 import React, { useState, useContext, useRef } from "react";
 import { AnnouncementsContext } from "../context/AnnouncementsContext";
 import {
-  FiSend,
   FiTrash2,
   FiAlertCircle,
   FiEdit2,
-  FiCheck,
-  FiX,
   FiSearch,
   FiPaperclip,
 } from "react-icons/fi";
@@ -41,13 +38,17 @@ export default function CreateAnnouncement() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (isEditing) {
-      updateAnnouncement(currentId, formData);
+      await updateAnnouncement(currentId, formData);
       setIsEditing(false);
     } else {
-      addAnnouncement(formData.title, formData.content, formData.attachment);
+      await addAnnouncement(
+        formData.title,
+        formData.content,
+        formData.attachment,
+      );
     }
     setFormData({ title: "", content: "", attachment: null });
     if (fileInputRef.current) fileInputRef.current.value = "";
@@ -85,11 +86,9 @@ export default function CreateAnnouncement() {
         </div>
       </header>
 
-      {/* --- PROFESSIONAL COMPACT FORM --- */}
       <section className={`pro-card ${isEditing ? "is-editing" : ""}`}>
         <form onSubmit={handleSubmit}>
           <div className="pro-form-row">
-            {/* Title Input */}
             <div className="pro-input-group flex-2">
               <label className="pro-label">Announcement Title</label>
               <input
@@ -103,7 +102,6 @@ export default function CreateAnnouncement() {
               />
             </div>
 
-            {/* File Input - Placed next to title for compactness */}
             <div className="pro-input-group flex-1">
               <label className="pro-label">Attachment (Optional)</label>
               <div className="pro-file-wrapper">
@@ -134,7 +132,6 @@ export default function CreateAnnouncement() {
             </div>
           </div>
 
-          {/* Content Area */}
           <div className="pro-input-group">
             <label className="pro-label">Full Description</label>
             <textarea
@@ -170,7 +167,6 @@ export default function CreateAnnouncement() {
         </form>
       </section>
 
-      {/* --- TABLE SECTION --- */}
       <section className="pro-list-area">
         <div className="pro-list-header">
           <h3>Recent Postings</h3>
@@ -203,9 +199,9 @@ export default function CreateAnnouncement() {
                   <td>
                     {a.attachment
                       ? a.attachment.includes("image")
-                        ? "🖼️ Image"
-                        : "📄 PDF"
-                      : "—"}
+                        ? "Image"
+                        : "PDF"
+                      : "-"}
                   </td>
                   <td className="text-right">
                     <button
@@ -216,7 +212,7 @@ export default function CreateAnnouncement() {
                     </button>
                     <button
                       className="pro-action-btn del"
-                      onClick={() => deleteAnnouncement(a.id)}
+                      onClick={() => deleteAnnouncement(a.id, a.title)}
                     >
                       <FiTrash2 />
                     </button>

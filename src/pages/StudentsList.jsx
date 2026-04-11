@@ -1,5 +1,6 @@
 import React, { useState, useContext } from "react";
 import { CourseContext } from "../context/CourseContext";
+import Swal from "sweetalert2";
 import {
   FiEye,
   FiEdit2,
@@ -30,7 +31,7 @@ export default function StudentsManagement() {
 
   // LOGIC YA KUCHUJA
   let displayData =
-    mainFilter === "graduaters"
+    mainFilter === "graduates"
       ? getGraduaters(levelFilter)
       : students.filter(
           (s) =>
@@ -61,10 +62,18 @@ export default function StudentsManagement() {
     }
   };
 
-  const saveEdit = (e) => {
+  const saveEdit = async (e) => {
     e.preventDefault();
     handleRegister(editStudent, true);
+    const studentName = `${editStudent.f_name} ${editStudent.l_name}`;
     setEditStudent(null);
+    await Swal.fire({
+      title: "Updated",
+      text: `${studentName} has been updated successfully.`,
+      icon: "success",
+      confirmButtonText: "OK",
+      confirmButtonColor: "#115c3a",
+    });
   };
 
   return (
@@ -105,10 +114,10 @@ export default function StudentsManagement() {
           Registered
         </button>
         <button
-          className={mainFilter === "graduaters" ? "active" : ""}
-          onClick={() => setMainFilter("graduaters")}
+          className={mainFilter === "graduates" ? "active" : ""}
+          onClick={() => setMainFilter("graduates")}
         >
-          Graduaters
+          Graduates
         </button>
 
         <select
@@ -168,20 +177,15 @@ export default function StudentsManagement() {
                     </button>
                     <button
                       className="action-btn edit"
-                      onClick={() =>
-                        setEditStudent({
-                          ...st,
-                          level: "",
-                          year: "",
-                          course: "",
-                        })
-                      }
+                      onClick={() => setEditStudent({ ...st })}
                     >
                       <FiEdit2 />
                     </button>
                     <button
                       className="action-btn delete"
-                      onClick={() => deleteStudent(st.regNo)}
+                      onClick={() =>
+                        deleteStudent(st.regNo, `${st.f_name} ${st.l_name}`)
+                      }
                     >
                       <FiTrash2 />
                     </button>
@@ -264,8 +268,12 @@ export default function StudentsManagement() {
                 {viewStudent.status === "pending" && (
                   <button
                     className="btn-approve"
-                    onClick={() => {
-                      updateStatus(viewStudent.regNo, "registered");
+                    onClick={async () => {
+                      await updateStatus(
+                        viewStudent.regNo,
+                        "registered",
+                        `${viewStudent.f_name} ${viewStudent.l_name}`,
+                      );
                       setViewStudent(null);
                     }}
                   >
@@ -306,10 +314,9 @@ export default function StudentsManagement() {
                 <div className="input-field">
                   <label>Middle Name</label>
                   <input
-                    name="f_name"
+                    name="m_name"
                     value={editStudent.m_name}
                     onChange={handleEditChange}
-                    required
                   />
                 </div>
                 <div className="input-field">
@@ -332,10 +339,8 @@ export default function StudentsManagement() {
                     onChange={handleEditChange}
                     required
                   >
-                    <option value="gender">select gender</option>
-
+                    <option value="">Select gender</option>
                     <option value="male">Male</option>
-
                     <option value="female">Female</option>
                   </select>
                 </div>

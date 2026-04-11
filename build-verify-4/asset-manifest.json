@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/static/css/main.920eb368.css",
+    "main.js": "/static/js/main.3510f8ea.js",
+    "static/js/453.2171e18c.chunk.js": "/static/js/453.2171e18c.chunk.js",
+    "static/media/tiamsa-back-ground.jpeg": "/static/media/tiamsa-back-ground.6253a57b958bc8cc5635.jpeg",
+    "static/media/logo.png": "/static/media/logo.1bdddc4ccdf37ef413ba.png",
+    "index.html": "/index.html",
+    "main.920eb368.css.map": "/static/css/main.920eb368.css.map",
+    "main.3510f8ea.js.map": "/static/js/main.3510f8ea.js.map",
+    "453.2171e18c.chunk.js.map": "/static/js/453.2171e18c.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.920eb368.css",
+    "static/js/main.3510f8ea.js"
+  ]
+}

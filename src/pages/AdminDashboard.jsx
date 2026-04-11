@@ -1,17 +1,15 @@
 import React, { useContext } from "react";
 import {
   FiUsers,
-  FiTrendingUp,
   FiUserPlus,
   FiClock,
   FiAward,
-  FiCheckCircle,
 } from "react-icons/fi";
 import { CourseContext } from "../context/CourseContext";
 import "../styles/AdminDashboard.css";
 
 export default function AdminDashboardContent() {
-  const { students } = useContext(CourseContext);
+  const { students, getGraduaters } = useContext(CourseContext);
 
   // DATA CALCULATION LOGIC
   const totalStudents = students.length;
@@ -19,10 +17,8 @@ export default function AdminDashboardContent() {
   const femaleStudents = students.filter((s) => s.gender === "female").length;
   const pendingStudents = students.filter((s) => s.status === "pending").length;
 
-  // NEW: Logic for Total Graduates
-  const totalGraduates = students.filter(
-    (s) => s.status === "graduated",
-  ).length;
+  // Graduate count should match the existing final-year registered logic
+  const totalGraduates = getGraduaters().length;
 
   // Logic for Today's Registration
   const today = new Date().toLocaleDateString();
