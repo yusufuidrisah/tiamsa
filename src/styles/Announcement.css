@@ -48,59 +48,118 @@
   padding: 0 20px;
 }
 
-/* Card Styling */
-.tiamsa-card {
-  background: white;
-  display: grid;
-  grid-template-columns: 140px minmax(0, 1fr);
-  border: 1px solid #e2e8f0;
-  border-radius: 16px;
-  overflow: hidden;
-  cursor: pointer;
-  position: relative;
-  transition: 0.3s;
-}
-.tiamsa-card:hover {
-  border-color: var(--tiamsa-green);
-  transform: translateY(-4px);
-  box-shadow: 0 18px 28px rgba(0, 0, 0, 0.07);
-}
-.tiamsa-card-media {
-  min-height: 168px;
-  background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
-}
-.tiamsa-card-media img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.announcement-summary-card {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: center;
+  background: linear-gradient(135deg, #064e3b 0%, #0f766e 100%);
+  color: white;
+  padding: 26px;
+  border-radius: 24px;
+  box-shadow: 0 24px 40px rgba(6, 78, 59, 0.18);
 }
 
-.tiamsa-card-file {
-  height: 100%;
+.announcement-summary-label {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #a7f3d0;
+  margin-bottom: 10px;
+}
+
+.announcement-summary-card h2 {
+  font-size: 2.2rem;
+  margin: 0 0 10px;
+}
+
+.announcement-summary-card p {
+  max-width: 540px;
+  margin: 0;
+  opacity: 0.88;
+  line-height: 1.6;
+}
+
+.announcement-summary-icon {
+  width: 74px;
+  height: 74px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.14);
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  color: var(--tiamsa-dark);
-  font-weight: 700;
-}
-
-.tiamsa-card-file svg {
   font-size: 2rem;
 }
 
-.tiamsa-card-info {
-  padding: 18px;
+.pinned-announcement-banner {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+  background: white;
+  border: 1px solid #dbe4ee;
+  border-left: 4px solid var(--tiamsa-green);
+  border-radius: 22px;
+  padding: 22px;
+  cursor: pointer;
+}
+
+.pinned-announcement-banner h2 {
+  margin: 8px 0 10px;
+  color: var(--tiamsa-text);
+}
+
+.pinned-announcement-banner p {
+  margin: 0;
+  color: #475569;
+  line-height: 1.7;
+}
+
+/* Card Styling */
+.tiamsa-card {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  cursor: pointer;
+  position: relative;
+  transition: 0.25s ease;
+  padding: 22px;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.04);
+}
+.tiamsa-card:hover {
+  border-color: #cbd5e1;
+  transform: translateY(-3px);
+  box-shadow: 0 18px 34px rgba(15, 23, 42, 0.08);
+}
+
+.tiamsa-card-body {
   display: flex;
   flex-direction: column;
+  gap: 14px;
+}
+
+.tiamsa-card-topline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   gap: 12px;
 }
+
+.tiamsa-meta-inline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
 .tiamsa-title-text {
-  font-size: 1rem;
-  font-weight: 700;
+  font-size: 1.08rem;
+  font-weight: 800;
   color: var(--tiamsa-text);
-  line-height: 1.3;
+  line-height: 1.4;
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -114,17 +173,40 @@
 
 .tiamsa-excerpt {
   margin: 0;
-  font-size: 0.92rem;
-  line-height: 1.55;
+  font-size: 0.94rem;
+  line-height: 1.7;
   color: #475569;
 }
 
-.tiamsa-date-row {
+.tiamsa-publisher-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-size: 0.82rem;
+  color: #64748b;
+}
+
+.tiamsa-attachment-row {
+  display: flex;
+  align-items: center;
   gap: 10px;
-  margin-top: auto;
+  color: #475569;
+  font-size: 0.88rem;
+  flex-wrap: wrap;
+}
+
+.tiamsa-attachment-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: #f0fdf4;
+  color: var(--tiamsa-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 .tiamsa-date-text {
@@ -138,6 +220,87 @@
   background: #ecfdf5;
   color: var(--tiamsa-dark);
   font-size: 11px;
+  font-weight: 700;
+}
+
+.announcement-category-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  background: #ecfdf5;
+  color: #065f46;
+}
+
+.announcement-category-badge.academic {
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.announcement-category-badge.exams {
+  background: #fff7ed;
+  color: #c2410c;
+}
+
+.announcement-category-badge.events {
+  background: #fdf2f8;
+  color: #be185d;
+}
+
+.announcement-category-badge.administration {
+  background: #f3e8ff;
+  color: #7e22ce;
+}
+
+.tiamsa-pin-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: #fffbeb;
+  color: #b45309;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.tiamsa-card-inline-media {
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+}
+
+.tiamsa-card-inline-media img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  display: block;
+}
+
+.tiamsa-readmore-row {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 2px;
+}
+
+.tiamsa-readmore {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--tiamsa-dark);
+}
+
+.tiamsa-inline-attachment-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  text-decoration: none;
+  color: var(--tiamsa-dark);
+  font-size: 0.84rem;
   font-weight: 700;
 }
 
@@ -286,6 +449,88 @@
   white-space: pre-wrap;
 }
 
+.announcement-pagination-wrap {
+  max-width: 1200px;
+  margin: -30px auto 60px;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.announcement-pagination-btn,
+.announcement-pagination-number {
+  border: 1px solid #dbe4ee;
+  background: white;
+  color: var(--tiamsa-text);
+  border-radius: 14px;
+  padding: 12px 16px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.announcement-pagination-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.announcement-pagination-pages {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.announcement-pagination-number {
+  min-width: 44px;
+}
+
+.announcement-pagination-number.active {
+  background: var(--tiamsa-green);
+  border-color: var(--tiamsa-green);
+  color: white;
+}
+
+.announcement-empty-state {
+  grid-column: 1 / -1;
+  background: white;
+  border: 1px dashed #cbd5e1;
+  border-radius: 20px;
+  padding: 28px;
+  text-align: center;
+  color: #64748b;
+}
+
+.announcement-skeleton {
+  border-radius: 20px;
+  background: linear-gradient(90deg, #e2e8f0 25%, #f8fafc 50%, #e2e8f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer-announcement 1.5s infinite;
+}
+
+.announcement-skeleton.banner {
+  grid-column: 1 / -1;
+  height: 140px;
+}
+
+.announcement-skeleton.card {
+  min-height: 280px;
+}
+
+@keyframes shimmer-announcement {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
 /* Responsive */
 @media (max-width: 1024px) {
   .tiamsa-grid {
@@ -296,17 +541,43 @@
   .tiamsa-grid {
     grid-template-columns: 1fr;
   }
-  .tiamsa-card {
-    grid-template-columns: 1fr;
-  }
-  .tiamsa-card-media {
-    min-height: 180px;
-  }
   .tiamsa-container {
     width: 94%;
     padding: 20px;
   }
   .tiamsa-hero h1 {
     font-size: 1.7rem;
+  }
+  .tiamsa-card {
+    padding: 18px;
+  }
+  .tiamsa-card-inline-media img {
+    height: 160px;
+  }
+  .announcement-summary-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .pinned-announcement-banner {
+    flex-direction: column;
+  }
+  .announcement-pagination-wrap {
+    margin-top: -40px;
+    align-items: stretch;
+  }
+}
+
+@media print {
+  .tiamsa-hero,
+  .announcement-pagination-wrap,
+  .tiamsa-inline-back,
+  .download-action-btn {
+    display: none !important;
+  }
+
+  .tiamsa-container {
+    box-shadow: none;
+    margin: 0;
+    max-width: 100%;
   }
 }

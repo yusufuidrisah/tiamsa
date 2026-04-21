@@ -4,6 +4,14 @@ import Swal from "sweetalert2";
 export const CourseContext = createContext();
 
 export function CourseProvider({ children }) {
+  const toast = Swal.mixin({
+    toast: true,
+    position: "top-end",
+    showConfirmButton: false,
+    timer: 2200,
+    timerProgressBar: true,
+  });
+
   const courseOptions = {
     certificate: [
       "Basic Technician Certificate in Accountancy (BTCA)",
@@ -110,12 +118,10 @@ export function CourseProvider({ children }) {
     saveToLS(updated);
 
     if (newStatus === "registered") {
-      await Swal.fire({
+      await toast.fire({
         title: "Approved",
         text: `${studentName} has been approved successfully.`,
         icon: "success",
-        confirmButtonText: "OK",
-        confirmButtonColor: "#115c3a",
       });
     }
   };
@@ -135,14 +141,52 @@ export function CourseProvider({ children }) {
 
     if (result.isConfirmed) {
       saveToLS(students.filter((s) => s.regNo !== regNo));
-      await Swal.fire({
+      await toast.fire({
         title: "Deleted",
         text: `${studentName} has been removed successfully.`,
         icon: "success",
-        confirmButtonText: "OK",
-        confirmButtonColor: "#115c3a",
       });
     }
+  };
+
+  const bulkUpdateStatus = async (regNos, newStatus) => {
+    const updated = students.map((student) =>
+      regNos.includes(student.regNo)
+        ? { ...student, status: newStatus }
+        : student,
+    );
+    saveToLS(updated);
+    await toast.fire({
+      title: "Updated",
+      text: `${regNos.length} student records were updated.`,
+      icon: "success",
+    });
+  };
+
+  const bulkDeleteStudents = async (regNos) => {
+    const result = await Swal.fire({
+      title: "Delete selected students?",
+      text: `${regNos.length} student records will be removed from the system.`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Delete selected",
+      cancelButtonText: "Cancel",
+      confirmButtonColor: "#dc2626",
+      cancelButtonColor: "#94a3b8",
+      reverseButtons: true,
+    });
+
+    if (result.isConfirmed) {
+      saveToLS(students.filter((student) => !regNos.includes(student.regNo)));
+      await toast.fire({
+        title: "Deleted",
+        text: `${regNos.length} student records were removed.`,
+        icon: "success",
+      });
+      return true;
+    }
+
+    return false;
   };
 
   const getGraduaters = (levelFilter) => {
@@ -172,6 +216,8 @@ export function CourseProvider({ children }) {
         handleRegister,
         updateStatus,
         deleteStudent,
+        bulkUpdateStatus,
+        bulkDeleteStudents,
         getGraduaters,
         courseOptions,
         resetForm,
