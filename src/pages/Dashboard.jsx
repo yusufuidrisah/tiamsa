@@ -3,11 +3,10 @@ import {
   FiGrid,
   FiUsers,
   FiBell,
+  FiPrinter,
   FiLogOut,
   FiMenu,
   FiX,
-  FiMoon,
-  FiSun,
   FiChevronRight,
 } from "react-icons/fi";
 import Swal from "sweetalert2";
@@ -15,11 +14,11 @@ import "../styles/Dashboard.css";
 import AnnouncementsList from "../pages/CreateAnnouncement";
 import StudentsManagement from "../pages/StudentsList";
 import AdminDashboardContent from "../pages/AdminDashboard";
+import CertificatePrinting from "../pages/CertificatePrinting";
 
 export default function AdminDashboard() {
   const [active, setActive] = useState("dashboard");
   const [menuOpen, setMenuOpen] = useState(false);
-  const [theme, setTheme] = useState("light");
 
   const handleLogout = async () => {
     const result = await Swal.fire({
@@ -43,13 +42,15 @@ export default function AdminDashboard() {
   const menuItems = [
     { id: "dashboard", label: "Dashboard", icon: <FiGrid /> },
     { id: "students", label: "Students", icon: <FiUsers /> },
+    { id: "certificates", label: "Certificates", icon: <FiPrinter /> },
     { id: "announcements", label: "Announcements", icon: <FiBell /> },
   ];
 
-  const activeItem = menuItems.find((item) => item.id === active) || menuItems[0];
+  const activeItem =
+    menuItems.find((item) => item.id === active) || menuItems[0];
 
   return (
-    <div className={`admin-dashboard theme-${theme}`}>
+    <div className="admin-dashboard">
       {/* Sidebar Overlay for Mobile */}
       {menuOpen && (
         <div
@@ -105,16 +106,6 @@ export default function AdminDashboard() {
             <strong className="header-screen-title">{activeItem.label}</strong>
           </div>
           <div className="header-actions">
-            <button
-              type="button"
-              className="theme-toggle-btn"
-              onClick={() =>
-                setTheme((current) => (current === "light" ? "dark" : "light"))
-              }
-            >
-              {theme === "light" ? <FiMoon /> : <FiSun />}
-              <span>{theme === "light" ? "Dark Mode" : "Light Mode"}</span>
-            </button>
             <div className="user-profile-top">
               <span>Welcome, Admin</span>
               <div className="avatar-small">A</div>
@@ -127,6 +118,7 @@ export default function AdminDashboard() {
             <AdminDashboardContent onQuickNavigate={setActive} />
           )}
           {active === "students" && <StudentsManagement />}
+          {active === "certificates" && <CertificatePrinting />}
           {active === "announcements" && <AnnouncementsList />}
         </main>
 

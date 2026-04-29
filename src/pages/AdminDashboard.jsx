@@ -89,6 +89,11 @@ export default function AdminDashboardContent({ onQuickNavigate }) {
       subtitle: "Create or pin an official announcement",
       action: () => onQuickNavigate?.("announcements"),
     },
+    {
+      title: "Print Certificates",
+      subtitle: "Open certificate preview and printing",
+      action: () => onQuickNavigate?.("certificates"),
+    },
   ];
 
   const courseChart = useMemo(() => {

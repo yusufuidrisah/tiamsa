@@ -1,267 +1,312 @@
 :root {
-  --primary-green: #198754;
-  --white: #ffffff;
-  --soft-gray: #f8fafc;
-  --text-dark: #0f172a;
-  --text-muted: #475569;
+  --about-green: #154d35;
+  --about-green-deep: #0c2a1d;
+  --about-gold: #b38a22;
+  --about-surface: #faf7f0;
+  --about-white: #ffffff;
+  --about-ink: #152219;
+  --about-muted: #5e665f;
+  --about-line: rgba(21, 34, 25, 0.1);
 }
 
 .about-page {
-  font-family: "Inter", sans-serif;
-  color: var(--text-dark);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--about-ink);
   background:
-    radial-gradient(circle at top right, rgba(25, 135, 84, 0.08), transparent 28%),
-    linear-gradient(180deg, #f8fafc 0%, #ffffff 40%);
+    radial-gradient(circle at top right, rgba(179, 138, 34, 0.08), transparent 28%),
+    linear-gradient(180deg, #f7f2e8 0%, #fbfcfa 36%, #ffffff 100%);
 }
 
 .about-hero {
-  padding: 110px 20px 60px;
+  padding: 92px 20px 48px;
+}
+
+.about-hero-shell,
+.about-container {
+  max-width: 1180px;
+  margin: 0 auto;
 }
 
 .about-hero-shell {
-  max-width: 1150px;
-  margin: 0 auto;
   display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
-  gap: 28px;
-  align-items: stretch;
+  grid-template-columns: minmax(0, 1.15fr) minmax(300px, 0.85fr);
+  gap: 24px;
 }
 
 .about-hero-content,
-.about-hero-panel {
-  background: rgba(255, 255, 255, 0.86);
-  border: 1px solid rgba(15, 23, 42, 0.08);
+.about-hero-panel,
+.intro-card,
+.info-card,
+.about-story-card,
+.act-card {
   border-radius: 28px;
-  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
+  border: 1px solid var(--about-line);
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 18px 44px rgba(15, 23, 42, 0.06);
 }
 
 .about-hero-content {
-  padding: 42px;
+  padding: 38px;
 }
 
-.about-tag {
+.about-section-copy span {
   display: inline-flex;
-  align-items: center;
-  background: rgba(25, 135, 84, 0.08);
-  color: var(--primary-green);
-  border: 1px solid rgba(25, 135, 84, 0.16);
+  padding: 9px 14px;
   border-radius: 999px;
-  padding: 10px 16px;
-  font-size: 0.8rem;
+  background: rgba(21, 77, 53, 0.08);
+  color: var(--about-green);
+  font-size: 0.78rem;
   font-weight: 800;
-  letter-spacing: 0.15em;
   text-transform: uppercase;
-  margin-bottom: 18px;
+  letter-spacing: 0.15em;
 }
 
 .about-hero h1 {
-  font-size: clamp(2.7rem, 6vw, 4.4rem);
-  font-weight: 800;
-  color: var(--text-dark);
   margin: 0 0 18px;
-  letter-spacing: -0.05em;
-  line-height: 1.02;
+  font-size: clamp(1.7rem, 3vw, 2.3rem);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: var(--about-green-deep);
+  font-weight: 700;
 }
 
-.about-hero p {
-  max-width: 720px;
+.about-hero p,
+.intro-card span,
+.info-card p,
+.about-section-copy p,
+.about-story-card p {
   margin: 0;
-  font-size: 1.08rem;
-  line-height: 1.8;
-  color: var(--text-muted);
+  color: var(--about-muted);
+  line-height: 1.75;
 }
 
 .about-pill-row {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-  margin-top: 26px;
+  margin-top: 28px;
 }
 
 .about-pill {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 999px;
   padding: 11px 16px;
-  font-size: 0.95rem;
+  border-radius: 999px;
+  background: #f8f6ef;
+  border: 1px solid rgba(21, 34, 25, 0.08);
+  color: var(--about-green-deep);
   font-weight: 600;
 }
 
-.about-pill svg {
-  color: var(--primary-green);
+.about-pill svg,
+.info-card h2,
+.act-card,
+.about-story-card svg {
+  color: var(--about-green);
 }
 
 .about-hero-panel {
-  padding: 30px;
-  background: linear-gradient(180deg, #115c3a 0%, #198754 100%);
-  color: white;
+  padding: 32px;
+  background:
+    linear-gradient(155deg, rgba(12, 42, 29, 0.98), rgba(21, 77, 53, 0.96));
+  color: var(--about-white);
 }
 
 .about-panel-label {
-  font-size: 0.8rem;
+  margin-bottom: 16px;
+  color: rgba(255, 255, 255, 0.74);
+  font-size: 0.78rem;
   font-weight: 800;
-  letter-spacing: 0.15em;
   text-transform: uppercase;
-  opacity: 0.78;
-  margin-bottom: 14px;
+  letter-spacing: 0.16em;
 }
 
 .about-hero-panel h2 {
   margin: 0 0 14px;
-  font-size: 1.7rem;
-  line-height: 1.2;
+  font-size: 1.45rem;
+  line-height: 1.1;
 }
 
 .about-hero-panel p {
-  color: rgba(255, 255, 255, 0.88);
-  margin: 0;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.about-panel-points {
+  display: grid;
+  gap: 14px;
+  margin-top: 24px;
+}
+
+.about-panel-points div {
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.about-panel-points strong,
+.about-panel-points span {
+  display: block;
+}
+
+.about-panel-points strong {
+  margin-bottom: 4px;
+}
+
+.about-panel-points span {
+  color: rgba(255, 255, 255, 0.74);
 }
 
 .about-main {
-  padding: 30px 20px 80px;
+  padding: 20px 20px 84px;
 }
 
-.about-container {
-  max-width: 1100px;
-  margin: 0 auto;
+.about-intro-grid,
+.vision-mission-grid,
+.about-story-grid,
+.activities-cards {
+  display: grid;
+  gap: 20px;
 }
 
 .about-intro-grid {
-  display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px;
   margin-bottom: 34px;
 }
 
 .intro-card {
-  background: white;
-  border: 1px solid #e2e8f0;
-  border-radius: 22px;
-  padding: 22px;
-  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.05);
+  padding: 24px;
+  background: linear-gradient(180deg, #ffffff 0%, #f9f6ef 100%);
 }
 
 .intro-card strong {
   display: block;
-  margin-bottom: 8px;
-  font-size: 1.1rem;
-  color: var(--primary-green);
-}
-
-.intro-card span {
-  color: var(--text-muted);
-  line-height: 1.6;
+  margin-bottom: 10px;
+  color: var(--about-green-deep);
+  font-size: 1.05rem;
 }
 
 .vision-mission-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-  margin-bottom: 60px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-bottom: 42px;
 }
 
 .info-card {
-  padding: 34px;
-  border: 1px solid #e2e8f0;
-  border-radius: 24px;
-  background: white;
-  box-shadow: 0 16px 32px rgba(15, 23, 42, 0.05);
-  transition:
-    border-color 0.3s ease,
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
-}
-
-.info-card:hover {
-  border-color: var(--primary-green);
-  transform: translateY(-4px);
-  box-shadow: 0 20px 38px rgba(15, 23, 42, 0.08);
+  padding: 32px;
 }
 
 .info-card h2 {
-  font-size: 1.5rem;
-  color: var(--primary-green);
-  margin-bottom: 15px;
   display: flex;
   align-items: center;
   gap: 10px;
+  margin: 0 0 16px;
+  font-size: 1.45rem;
 }
 
-.info-card p {
-  font-size: 1rem;
-  line-height: 1.6;
-  color: var(--text-muted);
+.about-story-section {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 420px);
+  gap: 24px;
+  align-items: start;
+  margin-bottom: 50px;
+}
+
+.about-section-copy h2,
+.section-title {
+  margin: 0 0 16px;
+  font-size: clamp(1.5rem, 3vw, 2.1rem);
+  line-height: 1.18;
+  color: var(--about-green-deep);
+}
+
+.about-section-copy span {
+  margin-bottom: 16px;
+}
+
+.about-story-grid {
+  grid-template-columns: 1fr;
+}
+
+.about-story-card {
+  padding: 24px;
+}
+
+.about-story-card svg {
+  font-size: 1.4rem;
+  margin-bottom: 16px;
+}
+
+.about-story-card strong {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 1.05rem;
+  color: var(--about-green-deep);
 }
 
 .section-title {
-  text-align: left;
-  font-size: 2rem;
-  margin-bottom: 28px;
-  padding-bottom: 10px;
-  border-bottom: 4px solid var(--primary-green);
-  display: inline-block;
+  margin-bottom: 22px;
 }
 
 .activities-cards {
-  display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 18px;
 }
 
 .act-card {
   padding: 22px;
-  background: white;
-  border: 1px solid #e2e8f0;
-  border-radius: 20px;
   display: flex;
   align-items: center;
   gap: 12px;
-  font-weight: 600;
-  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.04);
+  font-weight: 700;
+  background: linear-gradient(180deg, #ffffff 0%, #f8f4eb 100%);
 }
 
 .card-icon {
-  color: var(--primary-green);
+  color: var(--about-gold);
   font-size: 1.05rem;
 }
 
 .about-footer {
   text-align: center;
-  padding: 40px;
-  background: var(--white);
-  border-top: 1px solid #eee;
-  color: var(--text-muted);
-  font-size: 0.9rem;
+  padding: 36px 20px 44px;
+  border-top: 1px solid var(--about-line);
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--about-muted);
+  font-size: 0.92rem;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 960px) {
   .about-hero-shell,
   .about-intro-grid,
-  .vision-mission-grid {
+  .vision-mission-grid,
+  .about-story-section {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .about-hero {
+    padding-top: 72px;
   }
 
   .about-hero-content,
-  .about-hero-panel {
+  .about-hero-panel,
+  .intro-card,
+  .info-card,
+  .about-story-card,
+  .act-card {
     padding: 24px;
     border-radius: 22px;
   }
 
-  .about-hero h1 {
-    font-size: 2.2rem;
+  .about-pill-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .about-pill {
+    justify-content: center;
   }
 
   .about-main {
-    padding: 20px 20px 70px;
-  }
-}
-
-@media (max-width: 560px) {
-  .about-pill {
-    width: 100%;
-    justify-content: center;
+    padding-bottom: 60px;
   }
 }

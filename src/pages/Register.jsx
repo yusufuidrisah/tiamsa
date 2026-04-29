@@ -35,8 +35,8 @@ export default function Register() {
 
     if (isRegNoTaken) {
       Swal.fire({
-        title: "Kosa!",
-        text: `Samahani, Namba ya usajili (${formData.regNo}) imeshatumika tayari!`,
+        title: "Error!",
+        text: `Sorry, the registration number (${formData.regNo}) has already been used!`,
         icon: "error",
         confirmButtonColor: "#d33",
       });
@@ -47,10 +47,10 @@ export default function Register() {
 
     if (success) {
       Swal.fire({
-        title: "Usajili Umekamilika!",
-        text: "Maombi yako yametumwa kikamilifu. Subiri Admin ayathibitishe.",
+        title: "Registration Completed!",
+        text: "Your application has been successfully submitted. Please wait for the admin to approve it.",
         icon: "success",
-        confirmButtonText: "Sawa",
+        confirmButtonText: "OK",
         confirmButtonColor: "#198754",
       });
     }

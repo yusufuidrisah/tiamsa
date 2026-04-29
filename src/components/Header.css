@@ -1,47 +1,52 @@
-/* Header.css */
-
 .nav {
-  background-color: #146c43;
-  padding: 0.8rem 2rem;
-  color: white;
   position: sticky;
-  top: 1;
+  top: 0;
   z-index: 1000;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  padding: 1rem 2rem;
+  background: rgba(20, 108, 67, 0.96);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.08);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.nav.nav-home {
+  background: rgba(20, 108, 67, 0.92);
 }
 
 .nav-container {
-  max-width: 1200px;
+  max-width: 1240px;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 16px;
 }
 
-/* Logo Section */
 .logo-section {
   display: flex;
   align-items: center;
   gap: 12px;
   text-decoration: none;
-  color: white;
+  color: #ffffff;
 }
 
 .logo-png {
-  width: 45px;
-  height: 45px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.2);
   object-fit: cover;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .logo-text {
-  font-size: 1.4rem;
+  margin: 0;
+  font-size: 1.5rem;
   font-weight: 800;
-  letter-spacing: 1px;
+  letter-spacing: 0.08em;
 }
 
-/* Links Wrapper */
 .links-wrapper {
   display: flex;
   align-items: center;
@@ -49,52 +54,56 @@
 }
 
 .link {
-  color: rgba(255, 255, 255, 0.85);
-  text-decoration: none;
-  font-weight: 500;
-  padding: 8px 15px;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-size: 0.95rem;
+  padding: 10px 14px;
+  border-radius: 999px;
+  color: rgba(255, 255, 255, 0.82);
+  text-decoration: none;
+  font-size: 0.94rem;
+  font-weight: 600;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .link:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-1px);
 }
 
 .active-link {
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
-  font-weight: 700;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.18);
 }
 
-/* Admin Button Specific */
 .admin-btn {
-  background: rgba(0, 0, 0, 0.2);
   margin-left: 10px;
+  background: rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+  font-weight: 700;
+  border: 1px solid rgba(255, 255, 255, 0.16);
 }
 
 .admin-btn:hover {
-  background: #198754;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.24);
 }
 
 .nav-icon {
-  font-size: 1.1rem;
+  font-size: 1rem;
 }
 
-/* Hamburger Hidden on Desktop */
 .menu-icon {
   display: none;
-  font-size: 1.8rem;
-  cursor: pointer;
-  transition: 0.3s;
-  background: transparent;
-  color: white;
   border: none;
+  background: transparent;
+  color: #ffffff;
+  font-size: 1.9rem;
+  cursor: pointer;
   padding: 0;
 }
 
@@ -102,10 +111,9 @@
   display: none;
 }
 
-/* ----------- RESPONSIVE (Mobile) ----------- */
 @media (max-width: 900px) {
   .nav {
-    padding: 0.8rem 1.2rem;
+    padding: 0.9rem 1.2rem;
   }
 
   .menu-icon {
@@ -114,49 +122,46 @@
 
   .links-wrapper {
     position: absolute;
-    top: 100%;
+    top: calc(100% + 10px);
     left: 1rem;
     right: 1rem;
-    width: auto;
-    background: linear-gradient(180deg, #115c39 0%, #0d4b2f 100%);
     flex-direction: column;
-    padding: 20px;
-    gap: 10px;
-    border-radius: 18px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.2);
-    transform: translateY(-12px);
-    transition:
-      transform 0.3s ease,
-      opacity 0.3s ease;
-    z-index: 1002;
+    align-items: stretch;
+    padding: 18px;
+    border-radius: 22px;
+    background: linear-gradient(180deg, rgba(20, 108, 67, 0.99), rgba(17, 92, 58, 0.99));
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 20px 46px rgba(0, 0, 0, 0.22);
     opacity: 0;
     pointer-events: none;
+    transform: translateY(-12px);
+    transition:
+      opacity 0.25s ease,
+      transform 0.25s ease;
+    z-index: 1002;
   }
 
   .links-wrapper.active {
-    transform: translateY(12px);
     opacity: 1;
     pointer-events: auto;
+    transform: translateY(0);
   }
 
   .link {
-    width: 100%;
-    padding: 12px 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    justify-content: flex-start;
+    border-radius: 14px;
   }
 
   .admin-btn {
     margin-left: 0;
-    margin-top: 10px;
-    background: #198754;
+    margin-top: 6px;
   }
 
   .nav-overlay {
     display: block;
     position: fixed;
     inset: 0;
-    background: rgba(2, 6, 23, 0.35);
+    background: rgba(2, 6, 23, 0.42);
     border: none;
     padding: 0;
     z-index: 1001;

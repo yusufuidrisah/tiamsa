@@ -28,13 +28,12 @@ export default function StudentsManagement() {
     updateStatus,
     deleteStudent,
     bulkUpdateStatus,
-    bulkDeleteStudents,
     getGraduaters,
     handleRegister,
     courseOptions,
   } = useContext(CourseContext);
 
-  const [mainFilter, setMainFilter] = useState("pending");
+  const [mainFilter, setMainFilter] = useState("registered");
   const [levelFilter, setLevelFilter] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [viewStudent, setViewStudent] = useState(null);
@@ -88,25 +87,45 @@ export default function StudentsManagement() {
   }
 
   if (courseFilter) {
-    displayData = displayData.filter((student) => student.course === courseFilter);
+    displayData = displayData.filter(
+      (student) => student.course === courseFilter,
+    );
   }
 
   if (campusFilter) {
-    displayData = displayData.filter((student) => student.campus === campusFilter);
+    displayData = displayData.filter(
+      (student) => student.campus === campusFilter,
+    );
   }
 
   if (genderFilter) {
-    displayData = displayData.filter((student) => student.gender === genderFilter);
+    displayData = displayData.filter(
+      (student) => student.gender === genderFilter,
+    );
   }
 
   const advancedOptions = useMemo(
     () => ({
-      courses: [...new Set(students.map((student) => student.course).filter(Boolean))],
-      campuses: [...new Set(students.map((student) => student.campus).filter(Boolean))],
+      courses: levelFilter
+        ? courseOptions[levelFilter] || []
+        : [
+            ...new Set(
+              students.map((student) => student.course).filter(Boolean),
+            ),
+          ],
+      campuses: [
+        ...new Set(students.map((student) => student.campus).filter(Boolean)),
+      ],
       genders: ["male", "female"],
     }),
-    [students],
+    [students, levelFilter, courseOptions],
   );
+
+  useEffect(() => {
+    if (courseFilter && !advancedOptions.courses.includes(courseFilter)) {
+      setCourseFilter("");
+    }
+  }, [courseFilter, advancedOptions.courses]);
 
   displayData = [...displayData].sort((a, b) => {
     const first = String(a[sortConfig.key] ?? "").toLowerCase();
@@ -119,9 +138,23 @@ export default function StudentsManagement() {
   useEffect(() => {
     setCurrentPage(1);
     setSelectedStudents([]);
-  }, [mainFilter, levelFilter, searchTerm, courseFilter, campusFilter, genderFilter]);
+  }, [
+    mainFilter,
+    levelFilter,
+    searchTerm,
+    courseFilter,
+    campusFilter,
+    genderFilter,
+  ]);
 
-  const totalPages = Math.max(1, Math.ceil(displayData.length / studentsPerPage));
+  const totalPages = Math.max(
+    1,
+    Math.ceil(displayData.length / studentsPerPage),
+  );
+  const filteredRegNos = displayData.map((student) => student.regNo);
+  const allFilteredSelected =
+    filteredRegNos.length > 0 &&
+    filteredRegNos.every((regNo) => selectedStudents.includes(regNo));
   const startIndex = (currentPage - 1) * studentsPerPage;
   const paginatedStudents = displayData.slice(
     startIndex,
@@ -182,8 +215,10 @@ export default function StudentsManagement() {
 
   const validateEditForm = () => {
     const nextErrors = {};
-    if (!editStudent?.f_name?.trim()) nextErrors.f_name = "First name is required.";
-    if (!editStudent?.l_name?.trim()) nextErrors.l_name = "Last name is required.";
+    if (!editStudent?.f_name?.trim())
+      nextErrors.f_name = "First name is required.";
+    if (!editStudent?.l_name?.trim())
+      nextErrors.l_name = "Last name is required.";
     if (!editStudent?.gender) nextErrors.gender = "Select a gender.";
     if (!editStudent?.level) nextErrors.level = "Select a study level.";
     if (!editStudent?.course) nextErrors.course = "Select a course.";
@@ -227,22 +262,29 @@ export default function StudentsManagement() {
   };
 
   const toggleSelectAllVisible = () => {
-    const pageRegNos = paginatedStudents.map((student) => student.regNo);
-    const allSelected = pageRegNos.every((regNo) => selectedStudents.includes(regNo));
-
     setSelectedStudents((current) =>
-      allSelected
-        ? current.filter((regNo) => !pageRegNos.includes(regNo))
-        : [...new Set([...current, ...pageRegNos])],
+      allFilteredSelected
+        ? current.filter((regNo) => !filteredRegNos.includes(regNo))
+        : [...new Set([...current, ...filteredRegNos])],
     );
   };
 
   const exportSelectedStudents = () => {
     if (selectedStudents.length === 0) return;
 
-    const rows = students.filter((student) => selectedStudents.includes(student.regNo));
+    const rows = students.filter((student) =>
+      selectedStudents.includes(student.regNo),
+    );
     const csv = [
-      ["RegNo", "First Name", "Last Name", "Course", "Campus", "Gender", "Status"].join(","),
+      [
+        "RegNo",
+        "First Name",
+        "Last Name",
+        "Course",
+        "Campus",
+        "Gender",
+        "Status",
+      ].join(","),
       ...rows.map((student) =>
         [
           student.regNo,
@@ -269,12 +311,6 @@ export default function StudentsManagement() {
     if (selectedStudents.length === 0) return;
     await bulkUpdateStatus(selectedStudents, "registered");
     setSelectedStudents([]);
-  };
-
-  const handleBulkDelete = async () => {
-    if (selectedStudents.length === 0) return;
-    const deleted = await bulkDeleteStudents(selectedStudents);
-    if (deleted) setSelectedStudents([]);
   };
 
   if (loading) {
@@ -350,11 +386,46 @@ export default function StudentsManagement() {
       </div>
 
       <div className="advanced-filter-panel">
-        <div className="advanced-filter-head">
-          <strong>
-            <FiFilter /> Advanced Filters
-          </strong>
-          <div className="density-switch">
+        <div className="advanced-filter-label">
+          <FiFilter /> Advanced
+        </div>
+        <div className="filter-chip-row top-style">
+          <select
+            value={courseFilter}
+            onChange={(e) => setCourseFilter(e.target.value)}
+          >
+            <option value="">
+              {levelFilter ? `All ${levelFilter} Courses` : "All Courses"}
+            </option>
+            {advancedOptions.courses.map((course) => (
+              <option key={course} value={course}>
+                {course}
+              </option>
+            ))}
+          </select>
+          <select
+            value={campusFilter}
+            onChange={(e) => setCampusFilter(e.target.value)}
+          >
+            <option value="">All Campuses</option>
+            {advancedOptions.campuses.map((campus) => (
+              <option key={campus} value={campus}>
+                {campus}
+              </option>
+            ))}
+          </select>
+          <select
+            value={genderFilter}
+            onChange={(e) => setGenderFilter(e.target.value)}
+          >
+            <option value="">All Genders</option>
+            {advancedOptions.genders.map((gender) => (
+              <option key={gender} value={gender}>
+                {gender}
+              </option>
+            ))}
+          </select>
+          <div className="density-switch inline-density-switch">
             <button
               type="button"
               className={tableDensity === "compact" ? "active" : ""}
@@ -370,33 +441,6 @@ export default function StudentsManagement() {
               Comfortable
             </button>
           </div>
-        </div>
-
-        <div className="filter-chip-row">
-          <select value={courseFilter} onChange={(e) => setCourseFilter(e.target.value)}>
-            <option value="">All Courses</option>
-            {advancedOptions.courses.map((course) => (
-              <option key={course} value={course}>
-                {course}
-              </option>
-            ))}
-          </select>
-          <select value={campusFilter} onChange={(e) => setCampusFilter(e.target.value)}>
-            <option value="">All Campuses</option>
-            {advancedOptions.campuses.map((campus) => (
-              <option key={campus} value={campus}>
-                {campus}
-              </option>
-            ))}
-          </select>
-          <select value={genderFilter} onChange={(e) => setGenderFilter(e.target.value)}>
-            <option value="">All Genders</option>
-            {advancedOptions.genders.map((gender) => (
-              <option key={gender} value={gender}>
-                {gender}
-              </option>
-            ))}
-          </select>
         </div>
       </div>
 
@@ -415,8 +459,17 @@ export default function StudentsManagement() {
 
       {selectedStudents.length > 0 && (
         <div className="bulk-action-bar">
-          <div>
-            <strong>{selectedStudents.length}</strong> selected
+          <div className="bulk-action-copy">
+            <span className="bulk-action-label">Selection active</span>
+            <div>
+              <strong>{selectedStudents.length}</strong> student
+              {selectedStudents.length === 1 ? "" : "s"} selected
+            </div>
+            <p>
+              {allFilteredSelected
+                ? "All matching students across every page are selected."
+                : "You can export the selected student records as a CSV file."}
+            </p>
           </div>
           <div className="bulk-action-buttons">
             {mainFilter === "pending" && (
@@ -426,9 +479,6 @@ export default function StudentsManagement() {
             )}
             <button type="button" onClick={exportSelectedStudents}>
               <FiDownload /> Export Selected
-            </button>
-            <button type="button" className="danger" onClick={handleBulkDelete}>
-              <FiTrash2 /> Delete Selected
             </button>
           </div>
         </div>
@@ -441,27 +491,35 @@ export default function StudentsManagement() {
               <th>
                 <input
                   type="checkbox"
-                  checked={
-                    paginatedStudents.length > 0 &&
-                    paginatedStudents.every((student) =>
-                      selectedStudents.includes(student.regNo),
-                    )
-                  }
+                  checked={allFilteredSelected}
                   onChange={toggleSelectAllVisible}
+                  aria-label="Select all filtered students"
                 />
               </th>
               <th>
-                <button type="button" className="sort-btn" onClick={() => toggleSort("f_name")}>
+                <button
+                  type="button"
+                  className="sort-btn"
+                  onClick={() => toggleSort("f_name")}
+                >
                   Student Identity <FiSliders />
                 </button>
               </th>
               <th>
-                <button type="button" className="sort-btn" onClick={() => toggleSort("regNo")}>
+                <button
+                  type="button"
+                  className="sort-btn"
+                  onClick={() => toggleSort("regNo")}
+                >
                   Reg Number <FiSliders />
                 </button>
               </th>
               <th>
-                <button type="button" className="sort-btn" onClick={() => toggleSort("gender")}>
+                <button
+                  type="button"
+                  className="sort-btn"
+                  onClick={() => toggleSort("gender")}
+                >
                   Gender <FiSliders />
                 </button>
               </th>
@@ -483,7 +541,9 @@ export default function StudentsManagement() {
                     {st.studentID ? (
                       <img src={st.studentID} className="table-img" alt="" />
                     ) : (
-                      <div className="table-avatar-fallback">{getInitials(st)}</div>
+                      <div className="table-avatar-fallback">
+                        {getInitials(st)}
+                      </div>
                     )}
                     <div className="student-info-cell">
                       <span className="full-name">
@@ -534,10 +594,7 @@ export default function StudentsManagement() {
               ))
             ) : (
               <tr>
-                <td
-                  colSpan="5"
-                  className="students-empty-cell"
-                >
+                <td colSpan="5" className="students-empty-cell">
                   <div className="students-empty-state">
                     <strong>No students found</strong>
                     <p>
@@ -620,7 +677,8 @@ export default function StudentsManagement() {
                 <div className="modal-identity-copy">
                   <div className="modal-kicker">Student Profile</div>
                   <h3>
-                    {viewStudent.f_name} {viewStudent.m_name} {viewStudent.l_name}
+                    {viewStudent.f_name} {viewStudent.m_name}{" "}
+                    {viewStudent.l_name}
                   </h3>
                   <p className="modal-subtitle">{viewStudent.course}</p>
                   <div className="modal-quick-meta">
@@ -681,41 +739,41 @@ export default function StudentsManagement() {
                 )}
                 {activeProfileTab === "academic" && (
                   <section className="view-section-card">
-                  <h4>Academic Details</h4>
-                  <div className="info-grid-modern">
-                    <div className="info-item">
-                      <strong>Campus</strong>
-                      <span>{viewStudent.campus}</span>
+                    <h4>Academic Details</h4>
+                    <div className="info-grid-modern">
+                      <div className="info-item">
+                        <strong>Campus</strong>
+                        <span>{viewStudent.campus}</span>
+                      </div>
+                      <div className="info-item">
+                        <strong>Level</strong>
+                        <span>{viewStudent.level}</span>
+                      </div>
+                      <div className="info-item">
+                        <strong>Year</strong>
+                        <span>{viewStudent.year || "1"}</span>
+                      </div>
                     </div>
-                    <div className="info-item">
-                      <strong>Level</strong>
-                      <span>{viewStudent.level}</span>
-                    </div>
-                    <div className="info-item">
-                      <strong>Year</strong>
-                      <span>{viewStudent.year || "1"}</span>
-                    </div>
-                  </div>
                   </section>
                 )}
 
                 {activeProfileTab === "contacts" && (
                   <section className="view-section-card">
-                  <h4>Contact Information</h4>
-                  <div className="info-grid-modern compact">
-                    <div className="info-item full">
-                      <strong>
-                        <FiMail /> Email
-                      </strong>
-                      <span>{viewStudent.email}</span>
+                    <h4>Contact Information</h4>
+                    <div className="info-grid-modern compact">
+                      <div className="info-item full">
+                        <strong>
+                          <FiMail /> Email
+                        </strong>
+                        <span>{viewStudent.email}</span>
+                      </div>
+                      <div className="info-item full">
+                        <strong>
+                          <FiPhone /> Phone
+                        </strong>
+                        <span>{viewStudent.phone}</span>
+                      </div>
                     </div>
-                    <div className="info-item full">
-                      <strong>
-                        <FiPhone /> Phone
-                      </strong>
-                      <span>{viewStudent.phone}</span>
-                    </div>
-                  </div>
                   </section>
                 )}
               </div>
@@ -805,7 +863,9 @@ export default function StudentsManagement() {
                     onChange={handleEditChange}
                     required
                   />
-                  {editErrors.f_name && <small className="field-error">{editErrors.f_name}</small>}
+                  {editErrors.f_name && (
+                    <small className="field-error">{editErrors.f_name}</small>
+                  )}
                 </div>
                 <div className="input-field">
                   <label>Middle Name</label>
@@ -823,7 +883,9 @@ export default function StudentsManagement() {
                     onChange={handleEditChange}
                     required
                   />
-                  {editErrors.l_name && <small className="field-error">{editErrors.l_name}</small>}
+                  {editErrors.l_name && (
+                    <small className="field-error">{editErrors.l_name}</small>
+                  )}
                 </div>
               </div>
 
@@ -840,7 +902,9 @@ export default function StudentsManagement() {
                     <option value="male">Male</option>
                     <option value="female">Female</option>
                   </select>
-                  {editErrors.gender && <small className="field-error">{editErrors.gender}</small>}
+                  {editErrors.gender && (
+                    <small className="field-error">{editErrors.gender}</small>
+                  )}
                 </div>
                 <div className="input-field">
                   <label>Level</label>
@@ -854,7 +918,9 @@ export default function StudentsManagement() {
                     <option value="diploma">Diploma</option>
                     <option value="degree">Bachelor Degree</option>
                   </select>
-                  {editErrors.level && <small className="field-error">{editErrors.level}</small>}
+                  {editErrors.level && (
+                    <small className="field-error">{editErrors.level}</small>
+                  )}
                 </div>
               </div>
 
@@ -886,7 +952,9 @@ export default function StudentsManagement() {
                     onChange={handleEditChange}
                     required
                   />
-                  {editErrors.campus && <small className="field-error">{editErrors.campus}</small>}
+                  {editErrors.campus && (
+                    <small className="field-error">{editErrors.campus}</small>
+                  )}
                 </div>
               </div>
 
@@ -907,7 +975,9 @@ export default function StudentsManagement() {
                       </option>
                     ))}
                 </select>
-                {editErrors.course && <small className="field-error">{editErrors.course}</small>}
+                {editErrors.course && (
+                  <small className="field-error">{editErrors.course}</small>
+                )}
               </div>
 
               <div className="form-section-row">
@@ -920,7 +990,9 @@ export default function StudentsManagement() {
                     onChange={handleEditChange}
                     required
                   />
-                  {editErrors.email && <small className="field-error">{editErrors.email}</small>}
+                  {editErrors.email && (
+                    <small className="field-error">{editErrors.email}</small>
+                  )}
                 </div>
                 <div className="input-field">
                   <label>Phone</label>
@@ -931,7 +1003,9 @@ export default function StudentsManagement() {
                     onChange={handleEditChange}
                     required
                   />
-                  {editErrors.phone && <small className="field-error">{editErrors.phone}</small>}
+                  {editErrors.phone && (
+                    <small className="field-error">{editErrors.phone}</small>
+                  )}
                 </div>
               </div>
 

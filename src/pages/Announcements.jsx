@@ -9,21 +9,23 @@ import {
   FiImage,
   FiChevronLeft,
   FiChevronRight,
-  FiBell,
   FiStar,
+  FiBell,
 } from "react-icons/fi";
 import { AnnouncementsContext } from "../context/AnnouncementsContext";
 import "../styles/Announcement.css";
 
 export default function Announcements() {
   const { announcements } = useContext(AnnouncementsContext);
+
   const [selectedItem, setSelectedItem] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
+
   const perPage = 6;
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 450);
+    const timer = setTimeout(() => setLoading(false), 400);
     return () => clearTimeout(timer);
   }, []);
 
@@ -33,18 +35,23 @@ export default function Announcements() {
     }
     return b.id - a.id;
   });
-  const totalPages = Math.max(1, Math.ceil(sortedData.length / perPage));
-  const paginatedAnnouncements = sortedData.slice(
+
+  const pinnedAnnouncement = sortedData.find((item) => item.pinned);
+  const normalAnnouncements = sortedData.filter((item) => !item.pinned);
+
+  const totalPages = Math.max(
+    1,
+    Math.ceil(normalAnnouncements.length / perPage),
+  );
+
+  const paginatedAnnouncements = normalAnnouncements.slice(
     (currentPage - 1) * perPage,
     currentPage * perPage,
   );
 
-  useEffect(() => {
-    setCurrentPage((page) => Math.min(page, totalPages));
-  }, [totalPages]);
-
   const getAttachmentMeta = (attachment) => {
     const normalized = attachment ? attachment.toLowerCase() : "";
+
     const isImage =
       normalized.startsWith("data:image") ||
       normalized.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i);
@@ -58,107 +65,143 @@ export default function Announcements() {
 
   const getExcerpt = (text = "") => {
     if (text.length <= 110) return text;
-    return `${text.slice(0, 107).trim()}...`;
+    return text.slice(0, 105) + "...";
   };
 
-  const isNew = (timestamp) => {
-    const fortyEightHours = 2 * 24 * 60 * 60 * 1000;
-    return Date.now() - timestamp < fortyEightHours;
+  const handleOpenAnnouncement = (item) => {
+    setSelectedItem(item);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
-
-  const pinnedAnnouncement = sortedData.find((item) => item.pinned);
 
   if (loading) {
     return (
       <div className="tiamsa-page">
         <Header />
-        <div className="tiamsa-hero">
-          <div className="hero-inner">
-            <h1>Official Updates & Notices</h1>
-          </div>
-        </div>
-        <main className="tiamsa-grid">
-          <div className="announcement-skeleton banner"></div>
-          {Array.from({ length: 3 }, (_, index) => (
-            <div key={index} className="announcement-skeleton card"></div>
-          ))}
-        </main>
+        <div className="loading">Loading announcements...</div>
       </div>
     );
   }
 
   if (selectedItem) {
     const { isImage, isDocument } = getAttachmentMeta(selectedItem.attachment);
+    const detailContent = selectedItem.description || selectedItem.content;
 
     return (
       <div className="tiamsa-page">
         <Header />
-        <div className="tiamsa-hero">
-          <div className="hero-inner">
-            <h1>Official Updates & Notices</h1>
-            <p className="hero-description">
-              Access the latest administrative news, academic circulars, and
-              official announcements.
-            </p>
-          </div>
-        </div>
 
-        <main className="tiamsa-container">
-          <button
-            className="tiamsa-inline-back"
-            onClick={() => setSelectedItem(null)}
-          >
-            <FiArrowLeft /> Back to List
+        <main className="announcement-detail">
+          <button className="back-btn" onClick={() => setSelectedItem(null)}>
+            <FiArrowLeft /> Back
           </button>
 
-          <div className="post-header">
-            <h1 className="post-title">{selectedItem.title}</h1>
-            <div className="post-meta">
-              <span>
-                <FiCalendar /> Published: {selectedItem.date}
-              </span>
-              <span>{selectedItem.category || "General"}</span>
-              <span>By: {selectedItem.publishedBy || "TIAMSA Admin"}</span>
-              <span>
-                <FiClock /> Updated: {selectedItem.updatedAt || selectedItem.date}
-              </span>
-            </div>
-          </div>
+          <section className="detail-hero-card">
+            <div className="detail-hero-main">
+              <span className="detail-page-kicker">Official Notice</span>
+              <h1 className="detail-title">{selectedItem.title}</h1>
 
-          <div className="tiamsa-divider"></div>
+              <div className="detail-meta">
+                <span>
+                  <FiCalendar /> Published: {selectedItem.date}
+                </span>
 
-          {isImage && (
-            <div className="post-img-container">
-              <img
-                src={selectedItem.attachment}
-                alt={selectedItem.title}
-                className="post-img-detailed"
-              />
-            </div>
-          )}
+                <span>
+                  <FiClock /> Updated: {selectedItem.updatedAt || selectedItem.date}
+                </span>
 
-          {isDocument && (
-            <div className="doc-download-section">
-              <div className="doc-icon-circle">
-                <FiDownload size={40} color="#10b981" />
+                <span className="detail-category">
+                  {selectedItem.category || "General"}
+                </span>
               </div>
-              <p>Official Announcement Document</p>
-              <span className="doc-meta-text">Format: PDF or document | Official TIAMSA release</span>
-              <a
-                href={selectedItem.attachment}
-                download
-                target="_blank"
-                rel="noreferrer"
-                className="download-action-btn"
-              >
-                <FiDownload size={18} /> Download Now
-              </a>
+
+              <p className="detail-intro">
+                Review the full notice below. Any attached document or image is
+                provided in the attachment section for download.
+              </p>
             </div>
+
+            <aside className="detail-summary-card">
+              <h2>Notice Summary</h2>
+              <div className="detail-summary-row">
+                <span>Status</span>
+                <strong>{selectedItem.pinned ? "Priority" : "Published"}</strong>
+              </div>
+              <div className="detail-summary-row">
+                <span>Category</span>
+                <strong>{selectedItem.category || "General"}</strong>
+              </div>
+              <div className="detail-summary-row">
+                <span>Attachment</span>
+                <strong>
+                  {isImage
+                    ? "Image"
+                    : isDocument
+                      ? "Document"
+                      : "No attachment"}
+                </strong>
+              </div>
+            </aside>
+          </section>
+
+          {(isImage || isDocument) && (
+            <section className="detail-section-card">
+              <div className="section-heading">
+                <h2>Attachment</h2>
+                <span>
+                  {isImage ? "Attached image preview" : "Attached document"}
+                </span>
+              </div>
+
+              {isImage && (
+                <div className="image-preview-container">
+                  <img
+                    src={selectedItem.attachment}
+                    alt={selectedItem.title}
+                    className="detail-image"
+                  />
+
+                  <div className="image-actions">
+                    <a
+                      href={selectedItem.attachment}
+                      download
+                      target="_blank"
+                      rel="noreferrer"
+                      className="download-btn"
+                    >
+                      <FiDownload /> Download Image
+                    </a>
+                  </div>
+                </div>
+              )}
+
+              {isDocument && (
+                <div className="doc-box">
+                  <FiFileText size={40} />
+
+                  <p>Official announcement document attached to this notice.</p>
+
+                  <a
+                    href={selectedItem.attachment}
+                    download
+                    target="_blank"
+                    rel="noreferrer"
+                    className="download-btn"
+                  >
+                    <FiDownload /> Download Document
+                  </a>
+                </div>
+              )}
+            </section>
           )}
 
-          <div className="post-body">
-            {selectedItem.description || selectedItem.content}
-          </div>
+          <section className="detail-section-card">
+            <div className="section-heading">
+              <h2>Full Announcement</h2>
+              <span>Read the complete notice details below</span>
+            </div>
+
+            <div className="detail-body">{detailContent}</div>
+          </section>
         </main>
       </div>
     );
@@ -167,50 +210,58 @@ export default function Announcements() {
   return (
     <div className="tiamsa-page">
       <Header />
-      <div className="tiamsa-hero">
-        <div className="hero-inner">
-          <span className="hero-tag">TIAMSA DSM</span>
-          <h1>Official Updates & Notices</h1>
-          <p className="hero-description">
-            Access the latest administrative news, academic circulars, and
-            official announcements.
-          </p>
+
+      <div className="hero">
+        <div className="hero-shell">
+          <div className="hero-copy">
+            <span className="hero-kicker">
+              <FiBell /> Official Announcements
+            </span>
+            <h1>Announcement Board</h1>
+            <p>
+              Official notices, student communication, and academic updates from
+              TIAMSA.
+            </p>
+          </div>
+
+          <div className="hero-stats">
+            <div className="hero-stat-card">
+              <span className="stat-label">Published notices</span>
+              <strong>{announcements.length}</strong>
+            </div>
+            <div className="hero-stat-card">
+              <span className="stat-label">Priority notices</span>
+              <strong>{pinnedAnnouncement ? "1" : "0"}</strong>
+            </div>
+          </div>
         </div>
+
+        <div className="hero-divider" />
       </div>
 
-      <main className="tiamsa-grid">
-        <section className="announcement-summary-card">
-          <div>
-            <span className="announcement-summary-label">Published notices</span>
-            <h2>{sortedData.length}</h2>
-            <p>Browse every official update in smaller pages that feel cleaner on mobile.</p>
-          </div>
-          <div className="announcement-summary-icon">
-            <FiBell />
-          </div>
-        </section>
-
+      <main className="announcement-grid">
         {pinnedAnnouncement && (
           <section
-            className="pinned-announcement-banner"
-            onClick={() => setSelectedItem(pinnedAnnouncement)}
+            className="pinned-banner"
+            onClick={() => handleOpenAnnouncement(pinnedAnnouncement)}
           >
-            <div>
-              <span className="announcement-summary-label">Pinned Notice</span>
+            <div className="pinned-copy">
+              <span className="pinned-label">
+                <FiStar /> Pinned Notice
+              </span>
+
               <h2>{pinnedAnnouncement.title}</h2>
+
               <p>
-                {pinnedAnnouncement.description || pinnedAnnouncement.content}
+                {getExcerpt(
+                  pinnedAnnouncement.description || pinnedAnnouncement.content,
+                )}
               </p>
             </div>
-            <span
-              className={`announcement-category-badge ${String(
-                pinnedAnnouncement.category || "General",
-              )
-                .toLowerCase()
-                .replace(/\s+/g, "-")}`}
-            >
-              {pinnedAnnouncement.category || "General"}
-            </span>
+
+            <button type="button" className="pinned-action">
+              View notice
+            </button>
           </section>
         )}
 
@@ -218,118 +269,64 @@ export default function Announcements() {
           const { hasAttachment, isImage, isDocument } = getAttachmentMeta(
             item.attachment,
           );
+
           const excerpt = getExcerpt(item.description || item.content || "");
 
           return (
             <article
               key={item.id}
-              className="tiamsa-card"
-              onClick={() => setSelectedItem(item)}
+              className="announcement-card"
+              onClick={() => handleOpenAnnouncement(item)}
             >
-              <div className="tiamsa-card-body">
-                <div className="tiamsa-card-topline">
-                  <div className="tiamsa-meta-inline">
-                    <div className="tiamsa-date-text">{item.date}</div>
-                    {item.pinned && (
-                      <span className="tiamsa-pin-badge">
-                        <FiStar /> Pinned
-                      </span>
-                    )}
-                  </div>
-                  <div className="tiamsa-card-type">{item.category || "General"}</div>
-                </div>
+              <div className="card-meta">
+                <span>
+                  <FiCalendar /> {item.date}
+                </span>
 
-                <h2 className="tiamsa-title-text">{item.title}</h2>
-                <p className="tiamsa-excerpt">{excerpt}</p>
-
-                <div className="tiamsa-publisher-row">
-                  <span>Published by {item.publishedBy || "TIAMSA Admin"}</span>
-                  <span>Updated {item.updatedAt || item.date}</span>
-                </div>
-
-                {hasAttachment && (
-                  <div className="tiamsa-attachment-row">
-                    <span className="tiamsa-attachment-icon">
-                      {isImage ? <FiImage /> : <FiFileText />}
-                    </span>
-                    <span className="tiamsa-attachment-text">
-                      {isImage ? "Image attached" : "Document attached"}
-                    </span>
-                    {isDocument && (
-                      <a
-                        href={item.attachment}
-                        download
-                        target="_blank"
-                        rel="noreferrer"
-                        className="tiamsa-inline-attachment-btn"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <FiDownload /> Download
-                      </a>
-                    )}
-                  </div>
-                )}
-
-                {isImage && (
-                  <div className="tiamsa-card-inline-media">
-                    <img src={item.attachment} alt={item.title} />
-                  </div>
-                )}
-
-                <div className="tiamsa-readmore-row">
-                  <span className="tiamsa-readmore">Open announcement</span>
-                </div>
-
-                {isNew(item.id) && <div className="tiamsa-star-badge">NEW</div>}
+                <span className="category">{item.category || "General"}</span>
               </div>
+
+              <h2 className="card-title">{item.title}</h2>
+
+              <p className="card-text">{excerpt}</p>
+
+              {hasAttachment && (
+                <div className="card-attachment">
+                  {isImage && <FiImage />}
+                  {isDocument && <FiFileText />}
+
+                  <span>
+                    {isImage ? "Image attached" : "Document attached"}
+                  </span>
+                </div>
+              )}
+
+              <div className="read-more">View announcement</div>
             </article>
           );
         })}
-
-        {sortedData.length === 0 && (
-          <div className="announcement-empty-state">
-            No announcements have been published yet.
-          </div>
-        )}
       </main>
 
-      {sortedData.length > 0 && (
-        <div className="announcement-pagination-wrap">
-          <button
-            type="button"
-            className="announcement-pagination-btn"
-            onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
-            disabled={currentPage === 1}
-          >
-            <FiChevronLeft /> Previous
+      {normalAnnouncements.length > 0 && (
+        <div className="pagination">
+          <button onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}>
+            <FiChevronLeft />
           </button>
 
-          <div className="announcement-pagination-pages">
-            {Array.from({ length: totalPages }, (_, index) => index + 1).map(
-              (page) => (
-                <button
-                  key={page}
-                  type="button"
-                  className={`announcement-pagination-number ${
-                    currentPage === page ? "active" : ""
-                  }`}
-                  onClick={() => setCurrentPage(page)}
-                >
-                  {page}
-                </button>
-              ),
-            )}
-          </div>
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+            <button
+              key={page}
+              className={currentPage === page ? "active" : ""}
+              onClick={() => setCurrentPage(page)}
+            >
+              {page}
+            </button>
+          ))}
 
           <button
-            type="button"
-            className="announcement-pagination-btn"
-            onClick={() =>
-              setCurrentPage((page) => Math.min(totalPages, page + 1))
-            }
-            disabled={currentPage === totalPages}
+            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
           >
-            Next <FiChevronRight />
+            <FiChevronRight />
           </button>
         </div>
       )}
