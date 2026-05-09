@@ -34,7 +34,6 @@ export default function AdminDashboard() {
     });
 
     if (result.isConfirmed) {
-      localStorage.removeItem("tiamsa_token");
       window.location.href = "/admin/login";
     }
   };

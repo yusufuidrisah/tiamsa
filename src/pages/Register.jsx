@@ -26,7 +26,7 @@ export default function Register() {
     reader.readAsDataURL(file);
   };
 
-  const handleLocalSubmit = (e) => {
+  const handleLocalSubmit = async (e) => {
     e.preventDefault();
 
     const isRegNoTaken = students.some(
@@ -43,7 +43,7 @@ export default function Register() {
       return;
     }
 
-    const success = handleRegister(formData, false);
+    const success = await handleRegister(formData, false);
 
     if (success) {
       Swal.fire({

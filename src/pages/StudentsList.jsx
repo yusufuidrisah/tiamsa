@@ -232,7 +232,7 @@ export default function StudentsManagement() {
   const saveEdit = async (e) => {
     e.preventDefault();
     if (!validateEditForm()) return;
-    handleRegister(editStudent, true);
+    await handleRegister(editStudent, true);
     const studentName = `${editStudent.f_name} ${editStudent.l_name}`;
     setEditStudent(null);
     await toast.fire({

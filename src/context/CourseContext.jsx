@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect } from "react";
 import Swal from "sweetalert2";
+import { studentsApi } from "../services/api";
 
 export const CourseContext = createContext();
 
@@ -57,13 +58,16 @@ export function CourseProvider({ children }) {
   const [students, setStudents] = useState([]);
 
   useEffect(() => {
-    const data = JSON.parse(localStorage.getItem("tiamsa_students")) || [];
-    setStudents(data);
+    loadStudents();
   }, []);
 
-  const saveToLS = (updatedList) => {
-    setStudents(updatedList);
-    localStorage.setItem("tiamsa_students", JSON.stringify(updatedList));
+  const loadStudents = async () => {
+    try {
+      const data = await studentsApi.list();
+      setStudents(data);
+    } catch (error) {
+      console.error("Failed to load students:", error);
+    }
   };
 
   const resetForm = () => {
@@ -83,28 +87,33 @@ export function CourseProvider({ children }) {
     });
   };
 
-  const handleRegister = (data, isStaff = false) => {
-    const exists = students.find((s) => s.regNo === data.regNo);
+  const handleRegister = async (data, isStaff = false) => {
+    try {
+      const exists = students.find((s) => s.regNo === data.regNo);
 
-    if (exists) {
-      // Logic ya UPDATE (Edit)
-      const updatedList = students.map((s) =>
-        s.regNo === data.regNo ? { ...data, status: s.status } : s,
-      );
-      saveToLS(updatedList);
-      //alert("Taarifa zimebadilishwa kikamilifu!");
-    } else {
-      // Logic ya NEW registration
-      const newStudent = {
+      if (exists) {
+        await studentsApi.update(data.regNo, { ...data, status: exists.status });
+        resetForm();
+        await loadStudents();
+        return true;
+      }
+
+      await studentsApi.create({
         ...data,
-        id: Date.now(), //nitachange kwenye db
         status: isStaff ? "registered" : "pending",
-      };
-      saveToLS([...students, newStudent]);
-      //alert("Usajili umekamilika!");
+      });
+      resetForm();
+      await loadStudents();
+      return true;
+    } catch (error) {
+      await Swal.fire({
+        title: "Server connection problem",
+        text: error.message || "Could not save student data.",
+        icon: "error",
+        confirmButtonColor: "#d33",
+      });
+      return false;
     }
-    resetForm();
-    return true;
   };
 
   const updateStatus = async (
@@ -112,16 +121,23 @@ export function CourseProvider({ children }) {
     newStatus,
     studentName = "Student",
   ) => {
-    const updated = students.map((s) =>
-      s.regNo === regNo ? { ...s, status: newStatus } : s,
-    );
-    saveToLS(updated);
+    try {
+      await studentsApi.updateStatus(regNo, newStatus);
+      await loadStudents();
 
-    if (newStatus === "registered") {
-      await toast.fire({
-        title: "Approved",
-        text: `${studentName} has been approved successfully.`,
-        icon: "success",
+      if (newStatus === "registered") {
+        await toast.fire({
+          title: "Approved",
+          text: `${studentName} has been approved successfully.`,
+          icon: "success",
+        });
+      }
+    } catch (error) {
+      await Swal.fire({
+        title: "Server connection problem",
+        text: error.message || "Could not update student status.",
+        icon: "error",
+        confirmButtonColor: "#d33",
       });
     }
   };
@@ -140,27 +156,42 @@ export function CourseProvider({ children }) {
     });
 
     if (result.isConfirmed) {
-      saveToLS(students.filter((s) => s.regNo !== regNo));
-      await toast.fire({
-        title: "Deleted",
-        text: `${studentName} has been removed successfully.`,
-        icon: "success",
-      });
+      try {
+        await studentsApi.remove(regNo);
+        await loadStudents();
+        await toast.fire({
+          title: "Deleted",
+          text: `${studentName} has been removed successfully.`,
+          icon: "success",
+        });
+      } catch (error) {
+        await Swal.fire({
+          title: "Server connection problem",
+          text: error.message || "Could not delete student data.",
+          icon: "error",
+          confirmButtonColor: "#d33",
+        });
+      }
     }
   };
 
   const bulkUpdateStatus = async (regNos, newStatus) => {
-    const updated = students.map((student) =>
-      regNos.includes(student.regNo)
-        ? { ...student, status: newStatus }
-        : student,
-    );
-    saveToLS(updated);
-    await toast.fire({
-      title: "Updated",
-      text: `${regNos.length} student records were updated.`,
-      icon: "success",
-    });
+    try {
+      await studentsApi.bulkUpdateStatus(regNos, newStatus);
+      await loadStudents();
+      await toast.fire({
+        title: "Updated",
+        text: `${regNos.length} student records were updated.`,
+        icon: "success",
+      });
+    } catch (error) {
+      await Swal.fire({
+        title: "Server connection problem",
+        text: error.message || "Could not update student records.",
+        icon: "error",
+        confirmButtonColor: "#d33",
+      });
+    }
   };
 
   const bulkDeleteStudents = async (regNos) => {
@@ -177,13 +208,23 @@ export function CourseProvider({ children }) {
     });
 
     if (result.isConfirmed) {
-      saveToLS(students.filter((student) => !regNos.includes(student.regNo)));
-      await toast.fire({
-        title: "Deleted",
-        text: `${regNos.length} student records were removed.`,
-        icon: "success",
-      });
-      return true;
+      try {
+        await studentsApi.bulkDelete(regNos);
+        await loadStudents();
+        await toast.fire({
+          title: "Deleted",
+          text: `${regNos.length} student records were removed.`,
+          icon: "success",
+        });
+        return true;
+      } catch (error) {
+        await Swal.fire({
+          title: "Server connection problem",
+          text: error.message || "Could not delete student records.",
+          icon: "error",
+          confirmButtonColor: "#d33",
+        });
+      }
     }
 
     return false;

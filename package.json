@@ -17,6 +17,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "start:api": "python -m uvicorn backend.main:app --reload --port 4000",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

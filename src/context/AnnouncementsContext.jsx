@@ -1,5 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import { announcementsApi } from "../services/api";
 
 export const AnnouncementsContext = createContext();
 
@@ -12,63 +13,57 @@ export function AnnouncementsProvider({ children }) {
     timerProgressBar: true,
   });
 
-  const [announcements, setAnnouncements] = useState(() => {
-    const stored = localStorage.getItem("announcements");
-    return stored ? JSON.parse(stored) : [];
-  });
+  const [announcements, setAnnouncements] = useState([]);
 
   useEffect(() => {
-    localStorage.setItem("announcements", JSON.stringify(announcements));
-  }, [announcements]);
+    loadAnnouncements();
+  }, []);
 
-  const nowDate = () => new Date().toISOString().split("T")[0];
+  const loadAnnouncements = async () => {
+    try {
+      const data = await announcementsApi.list();
+      setAnnouncements(data);
+    } catch (error) {
+      console.error("Failed to load announcements:", error);
+    }
+  };
 
   const addAnnouncement = async (announcementData) => {
-    const newEntry = {
-      id: Date.now(),
-      title: announcementData.title,
-      description: announcementData.content,
-      attachment: announcementData.attachment,
-      category: announcementData.category || "General",
-      pinned: Boolean(announcementData.pinned),
-      publishedBy: announcementData.publishedBy || "TIAMSA Admin",
-      date: nowDate(),
-      updatedAt: nowDate(),
-    };
-    setAnnouncements((prev) => [newEntry, ...prev]);
-    await toast.fire({
-      title: "Published",
-      text: `"${announcementData.title}" has been published successfully.`,
-      icon: "success",
-    });
+    try {
+      await announcementsApi.create(announcementData);
+      await loadAnnouncements();
+      await toast.fire({
+        title: "Published",
+        text: `"${announcementData.title}" has been published successfully.`,
+        icon: "success",
+      });
+    } catch (error) {
+      await Swal.fire({
+        title: "Server connection problem",
+        text: error.message || "Could not publish the announcement.",
+        icon: "error",
+        confirmButtonColor: "#d33",
+      });
+    }
   };
 
   const updateAnnouncement = async (id, updatedData) => {
-    setAnnouncements((prev) =>
-      prev.map((ann) =>
-        ann.id === id
-          ? {
-              ...ann,
-              title: updatedData.title,
-              description: updatedData.content,
-              attachment: updatedData.attachment,
-              category: updatedData.category || ann.category || "General",
-              pinned:
-                typeof updatedData.pinned === "boolean"
-                  ? updatedData.pinned
-                  : Boolean(ann.pinned),
-              publishedBy:
-                updatedData.publishedBy || ann.publishedBy || "TIAMSA Admin",
-              updatedAt: nowDate(),
-            }
-          : ann,
-      ),
-    );
-    await toast.fire({
-      title: "Updated",
-      text: `"${updatedData.title}" has been updated successfully.`,
-      icon: "success",
-    });
+    try {
+      await announcementsApi.update(id, updatedData);
+      await loadAnnouncements();
+      await toast.fire({
+        title: "Updated",
+        text: `"${updatedData.title}" has been updated successfully.`,
+        icon: "success",
+      });
+    } catch (error) {
+      await Swal.fire({
+        title: "Server connection problem",
+        text: error.message || "Could not update the announcement.",
+        icon: "error",
+        confirmButtonColor: "#d33",
+      });
+    }
   };
 
   const deleteAnnouncement = async (id, title = "this announcement") => {
@@ -85,12 +80,22 @@ export function AnnouncementsProvider({ children }) {
     });
 
     if (result.isConfirmed) {
-      setAnnouncements(announcements.filter((a) => a.id !== id));
-      await toast.fire({
-        title: "Deleted",
-        text: `"${title}" has been deleted successfully.`,
-        icon: "success",
-      });
+      try {
+        await announcementsApi.remove(id);
+        await loadAnnouncements();
+        await toast.fire({
+          title: "Deleted",
+          text: `"${title}" has been deleted successfully.`,
+          icon: "success",
+        });
+      } catch (error) {
+        await Swal.fire({
+          title: "Server connection problem",
+          text: error.message || "Could not delete the announcement.",
+          icon: "error",
+          confirmButtonColor: "#d33",
+        });
+      }
     }
   };
 
@@ -108,13 +113,23 @@ export function AnnouncementsProvider({ children }) {
     });
 
     if (result.isConfirmed) {
-      setAnnouncements((prev) => prev.filter((item) => !ids.includes(item.id)));
-      await toast.fire({
-        title: "Deleted",
-        text: `${ids.length} announcements were removed.`,
-        icon: "success",
-      });
-      return true;
+      try {
+        await announcementsApi.bulkDelete(ids);
+        await loadAnnouncements();
+        await toast.fire({
+          title: "Deleted",
+          text: `${ids.length} announcements were removed.`,
+          icon: "success",
+        });
+        return true;
+      } catch (error) {
+        await Swal.fire({
+          title: "Server connection problem",
+          text: error.message || "Could not delete the announcements.",
+          icon: "error",
+          confirmButtonColor: "#d33",
+        });
+      }
     }
 
     return false;

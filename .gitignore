@@ -10,6 +10,10 @@
 
 # production
 /build
+/build-codex
+/build-codex-*
+/build-verify
+/build-verify-*
 
 # misc
 .DS_Store
@@ -21,3 +25,7 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+__pycache__/
+*.py[cod]
+backend/database/*.sqlite
+backend/database/*-journal

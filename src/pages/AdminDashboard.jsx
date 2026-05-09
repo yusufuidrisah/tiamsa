@@ -29,7 +29,9 @@ export default function AdminDashboardContent({ onQuickNavigate }) {
   const totalGraduates = getGraduaters().length;
   const today = new Date().toLocaleDateString();
   const registeredToday = students.filter((s) => {
-    const studentDate = new Date(s.id).toLocaleDateString();
+    const studentDate = s.createdAt
+      ? new Date(s.createdAt).toLocaleDateString()
+      : "";
     return studentDate === today;
   }).length;
 
@@ -118,7 +120,10 @@ export default function AdminDashboardContent({ onQuickNavigate }) {
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
     const monthCounts = new Map(months.map((month) => [month, 0]));
     students.forEach((student) => {
-      const month = new Date(student.id).toLocaleString("en-US", {
+      if (!student.createdAt) {
+        return;
+      }
+      const month = new Date(student.createdAt).toLocaleString("en-US", {
         month: "short",
       });
       if (monthCounts.has(month)) {
